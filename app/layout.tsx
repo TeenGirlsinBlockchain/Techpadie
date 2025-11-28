@@ -16,7 +16,7 @@ const lexend = Lexend({
 export const metadata: Metadata = {
   title: "Techpadie - Learn Blockchain & Earn",
   description:
-    "A multilingual gamified learning platform for blockchain & tech skills.",
+    "A multilingual gamified learning platform for blockchain.",
 };
 
 export default function RootLayout({
