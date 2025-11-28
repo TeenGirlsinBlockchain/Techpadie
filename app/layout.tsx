@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Lexend } from "next/font/google";
+import { Toaster } from 'react-hot-toast';
 
 import "@/app/_styles/globals.css";
 
@@ -27,9 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${lexend.variable} antialiased bg-[#0a0a0a] text-white`}
-      >
+        className={`${inter.variable} ${lexend.variable} antialiased bg-[#0a0a0a] text-white`}>
         {children}
+        <Toaster position="top-right"/>
       </body>
     </html>
   );
