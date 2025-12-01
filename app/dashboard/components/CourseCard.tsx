@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import { PlayIcon, ClockIcon } from '@heroicons/react/24/solid';
 
