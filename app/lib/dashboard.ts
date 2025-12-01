@@ -16,3 +16,11 @@ export interface CourseData {
   timeRemaining: string;
   id: number;
 }
+
+export interface CourseCardProps {
+  courseTitle: string;
+  nextLesson: string;
+  progressPercentage: number;
+  timeRemaining: string;
+  onContinue: () => void; 
+}

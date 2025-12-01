@@ -1,4 +1,3 @@
-// app/dashboard/page.tsx (Server Component)
 
 // Import the Client Wrapper
 import DashboardClientWrapper from './components/DashboardClientWrapper'; 
@@ -70,14 +69,14 @@ export default function DashboardHome() {
               Welcome Back, Daniel 👋
             </h1>
             <p className="text-zinc-400 mt-1">
-              Ready to continue your learning journey? You're doing amazing!
+              Ready to continue your learning journey? You&apos;re doing amazing!
             </p>
             {/* The button in the header is static here */}
             <button className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition">
               Continue Learning
             </button>
           </div>
-          <div className="w-24 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg opacity-70"></div>
+          <div className="w-24 h-16 bg-linear-to-br from-indigo-500 to-purple-600 rounded-lg opacity-70"></div>
         </div>
       </section>
 

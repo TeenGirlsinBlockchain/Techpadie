@@ -1,14 +1,9 @@
 "use client"
 import React from 'react';
 import { PlayIcon, ClockIcon } from '@heroicons/react/24/solid';
+import { CourseCardProps } from '@/app/lib/dashboard';
 
-interface CourseCardProps {
-  courseTitle: string;
-  nextLesson: string;
-  progressPercentage: number; // 0 to 100
-  timeRemaining: string; // e.g., "0h 30m"
-  onContinue: () => void; // Function to handle button click
-}
+
 
 export default function CourseCard({
   courseTitle,
