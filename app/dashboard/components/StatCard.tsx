@@ -1,4 +1,3 @@
-// app/dashboard/components/StatCard.tsx
 import React from 'react';
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
 import { BoltIcon, ClockIcon, TrophyIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/solid';
