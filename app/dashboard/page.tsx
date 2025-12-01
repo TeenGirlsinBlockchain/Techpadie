@@ -2,7 +2,7 @@
 // Import the Client Wrapper
 import DashboardClientWrapper from './components/DashboardClientWrapper'; 
 
-// Mock Data structure (remains here, or is fetched from API)
+// Mock Data structure (remains here, till Tee and David build the APIs)
 const statData = [
   // ... (Your statData array remains here)
   { 
