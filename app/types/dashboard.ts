@@ -37,3 +37,22 @@ export interface DetailedCourse {
   isCertified: boolean;
   imageUrl: string; // For the enrollment card
 }
+
+export interface CourseCardProps {
+  courseTitle: string;
+  nextLesson: string;
+  progressPercentage: number;
+  timeRemaining: string;
+  onContinue: () => void; 
+  imageUrl: string;
+  priceUSD: boolean;
+}
+
+export interface CourseContent {
+  id: number;
+  lessonId: number;
+  title: string;
+  contentType: 'text' | 'quiz' | 'video'; // Only text for now
+  content: string; // The translated course text
+  isCompleted: boolean;
+}

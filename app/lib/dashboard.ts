@@ -23,4 +23,6 @@ export interface CourseCardProps {
   progressPercentage: number;
   timeRemaining: string;
   onContinue: () => void; 
+  imageUrl: string;
+  priceUSD: boolean;
 }
