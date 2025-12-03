@@ -11,3 +11,29 @@ export interface ExploreCourse {
   enrolledCount: number;
   isNew: boolean;
 }
+
+
+
+export interface Lesson {
+  id: number;
+  title: string;
+  durationMinutes: number;
+}
+
+export interface Module {
+  id: number;
+  title: string;
+  lessons: Lesson[];
+}
+
+export interface DetailedCourse {
+  id: number;
+  title: string;
+  description: string;
+  priceUSD: number;
+  modules: Module[];
+  totalModules: number;
+  totalDurationHours: number;
+  isCertified: boolean;
+  imageUrl: string; // For the enrollment card
+}
