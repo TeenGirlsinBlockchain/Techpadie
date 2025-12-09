@@ -3,13 +3,6 @@
 import React from 'react';
 import { CurrencyDollarIcon, PresentationChartBarIcon, CheckCircleIcon, CubeTransparentIcon } from '@heroicons/react/24/solid';
 
-interface EnrollmentCardProps {
-  imageUrl: string;
-  priceUSD: number;
-  totalModules: number;
-  totalDurationHours: number;
-  isCertified: boolean;
-}
 
 export default function EnrollmentCard({
   imageUrl,
@@ -19,17 +12,17 @@ export default function EnrollmentCard({
   isCertified,
 }: EnrollmentCardProps) {
   return (
-    <div className="bg-[#1F2937] rounded-xl border border-[#2D3748] shadow-lg overflow-hidden sticky top-24">
+    // CHANGES: Light Glassmorphism style
+    <div className="bg-white/70 backdrop-blur-md rounded-xl border border-gray-200 shadow-xl overflow-hidden sticky top-24">
       
       {/* Course Image */}
       <div className="h-40 w-full overflow-hidden">
-        {/* Placeholder for the dynamic image */}
-        <div 
+        {/* ... (Image placeholder remains the same, adjusted for light theme) ... */}
+         <div 
           className="w-full h-full bg-cover bg-center" 
           style={{ backgroundImage: `url(${imageUrl})` }}
         >
-          {/* Fallback/Image Placeholder */}
-          <div className="w-full h-full bg-zinc-600/50 flex items-center justify-center text-xl font-bold text-white">
+          <div className="w-full h-full bg-gray-300/50 flex items-center justify-center text-xl font-bold text-gray-700">
             [Course Image]
           </div>
         </div>
@@ -37,44 +30,47 @@ export default function EnrollmentCard({
 
       <div className="p-6">
         {/* Price and Enrollment Button */}
-        <div className="flex items-center justify-between mb-4 pb-4 border-b border-zinc-700">
-          <div className="text-3xl font-bold text-white flex items-center space-x-2">
-            <CurrencyDollarIcon className="h-6 w-6 text-green-400" />
+        <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-300">
+          <div className="text-3xl font-bold flex items-center space-x-2" style={{ color: '#000000B2' }}>
+            <CurrencyDollarIcon className="h-6 w-6 text-green-600" />
             <span>${priceUSD.toLocaleString()}</span>
           </div>
           <button 
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition"
+            className="px-4 py-2 text-white rounded-lg font-medium transition"
             onClick={() => console.log('Enrollment clicked')}
+            // Action button uses Accent Blue
+            style={{ backgroundColor: '#227FA1', hover: { backgroundColor: '#1A6B8A' } }}
           >
             Enroll Now
           </button>
         </div>
         
         {/* Course Includes List */}
-        <h3 className="text-lg font-semibold text-white mb-3">Course Includes:</h3>
+        <h3 className="text-lg font-semibold mb-3" style={{ color: '#000000B2' }}>Course Includes:</h3>
         
-        <ul className="space-y-3 text-sm">
-          {/* Total Modules */}
-          <li className="flex items-center text-zinc-300 space-x-3">
-            <CubeTransparentIcon className="h-5 w-5 text-purple-400" />
+        <ul className="space-y-3 text-sm text-gray-700">
+          {/* Icons use Accent Blue */}
+          <li className="flex items-center space-x-3">
+            <CubeTransparentIcon className="h-5 w-5" style={{ color: '#227FA1' }} />
             <span>**{totalModules} Modules** of content</span>
           </li>
-          {/* Total Duration */}
-          <li className="flex items-center text-zinc-300 space-x-3">
-            <PresentationChartBarIcon className="h-5 w-5 text-purple-400" />
+          {/* ... (Other list items follow similar styling) ... */}
+          <li className="flex items-center space-x-3">
+            <PresentationChartBarIcon className="h-5 w-5" style={{ color: '#227FA1' }} />
             <span>**{totalDurationHours} Hours** Total Learning Time</span>
           </li>
-          {/* Certification */}
-          <li className="flex items-center text-zinc-300 space-x-3">
-            <CheckCircleIcon className={`h-5 w-5 ${isCertified ? 'text-green-400' : 'text-zinc-500'}`} />
+          <li className="flex items-center space-x-3">
+            <CheckCircleIcon className={`h-5 w-5 ${isCertified ? 'text-green-600' : 'text-gray-500'}`} />
             <span>{isCertified ? 'Includes Certificate of Completion' : 'No Certificate offered'}</span>
           </li>
         </ul>
         
         {/* Connect Wallet Button */}
         <button 
-          className="mt-6 w-full inline-flex items-center justify-center px-4 py-3 border border-purple-500 text-purple-400 rounded-lg font-semibold hover:bg-purple-500 hover:text-white transition"
+          className="mt-6 w-full inline-flex items-center justify-center px-4 py-3 border rounded-lg font-semibold transition"
           onClick={() => console.log('Connect Wallet clicked')}
+          // Outline button uses Accent Blue
+          style={{ borderColor: '#227FA1', color: '#227FA1' }}
         >
           Connect Wallet to Enroll
         </button>

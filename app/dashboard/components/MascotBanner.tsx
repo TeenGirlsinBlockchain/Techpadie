@@ -1,71 +1,70 @@
 "use client";
 
 import React from 'react';
-import { SparklesIcon, XCircleIcon } from '@heroicons/react/24/solid';
+import { SparklesIcon, FireIcon } from '@heroicons/react/24/outline';
 
-
-interface MascotPlaceholderProps {
-    isConsistent: boolean;
-}
-
-const MascotPlaceholder: React.FC<MascotPlaceholderProps> = ({ isConsistent }) => (
-    <div className="w-16 h-16 bg-white/30 rounded-full flex items-center justify-center text-4xl shadow-inner">
-        {isConsistent ? '😀' : '😞'}
-    </div>
+// Mock Mascot (since we removed emojis)
+const MascotPlaceholder = ({ status }: { status: 'happy' | 'sad' }) => (
+  <div className={`p-4 rounded-full ${status === 'happy' ? 'bg-green-100' : 'bg-red-100'}`}>
+    {/* Placeholder for a small mascot image/icon */}
+    <span className={`text-xl font-bold ${status === 'happy' ? 'text-green-600' : 'text-red-600'}`}>
+      {status === 'happy' ? '^_^' : ':('} 
+    </span>
+  </div>
 );
 
 interface MascotBannerProps {
-  currentStreak: number; // Number of consecutive learning days
-  dailyGoalMet: boolean; // Did the user complete today's goal?
+  currentStreak: number;
+  dailyGoalMet: boolean;
 }
 
 export default function MascotBanner({ currentStreak, dailyGoalMet }: MascotBannerProps) {
-  // Now, isConsistent is a simple boolean variable
-  const isConsistent = currentStreak > 0 && dailyGoalMet; 
+  let themeClass = '';
+  let message = '';
+  let mascotStatus: 'happy' | 'sad' = 'sad';
 
-  // --- Dynamic Content Logic ---
-  let mascotMessage: string;
-  let mascotTheme: string;
-  let IconComponent;
-  
-  if (isConsistent) {
-    mascotTheme = 'bg-green-700/80 border-green-500';
-    IconComponent = SparklesIcon;
+  // Logic based on state
+  if (currentStreak > 0 && dailyGoalMet) {
+    // Consistent Streak (Good Status - Light Green/Accent Theme)
+    mascotStatus = 'happy';
+    themeClass = 'bg-green-500/10 border-green-400 text-green-800';
     if (currentStreak >= 7) {
-      mascotMessage = `Awesome! You've maintained a ${currentStreak}-day streak! Keep up the momentum!`;
+      message = `You've maintained a ${currentStreak}-day streak! Keep up this incredible pace.`;
     } else {
-      mascotMessage = `Great start! Your learning streak is at ${currentStreak} days.`;
+      message = `Your learning streak is at ${currentStreak} days. Great start!`;
     }
-  } else if (currentStreak === 0 && dailyGoalMet === false) {
-    mascotTheme = 'bg-red-700/80 border-red-500';
-    IconComponent = XCircleIcon;
-    mascotMessage = "Uh oh! You haven't started your learning today. Don't break the chain!";
-  } else { // Current streak > 0 but today's goal is not met yet
-     mascotTheme = 'bg-yellow-700/80 border-yellow-500';
-    IconComponent = XCircleIcon;
-    mascotMessage = `Your streak is at ${currentStreak} days, but today's goal is incomplete! Finish strong!`;
+  } else if (currentStreak > 0 && !dailyGoalMet) {
+    // Streak in Danger (Warning Status - Light Yellow/Accent Theme)
+    mascotStatus = 'sad';
+    themeClass = 'bg-yellow-500/10 border-yellow-400 text-yellow-800';
+    message = `Warning! Your ${currentStreak}-day streak is in danger. Finish today's goal is incomplete!`;
+  } else {
+    // No Streak (Danger Status - Light Red/Accent Theme)
+    mascotStatus = 'sad';
+    themeClass = 'bg-red-500/10 border-red-400 text-red-800';
+    message = "Uh oh! You haven't started your learning today. Let's get back on track!";
   }
-  
+
+
   return (
-    <div className={`p-6 rounded-xl border-2 text-white shadow-2xl flex items-center justify-between transition-colors duration-500 ${mascotTheme}`}>
+    <div className={`
+      flex items-center p-5 rounded-xl border-l-4 shadow-md transition-all
+      ${themeClass}
+    `}>
+      <MascotPlaceholder status={mascotStatus} />
       
-      {/* Mascot and Message */}
-      <div className="flex items-center space-x-4">
-        {/* Call the stable component and pass the necessary prop */}
-        <MascotPlaceholder isConsistent={isConsistent} /> 
-        <div>
-          <h2 className="text-xl font-inter font-bold">Techpadie Mascot says:</h2>
-          <p className="text-sm font-lexend mt-1">{mascotMessage}</p>
-        </div>
+      <div className="flex-grow mx-4">
+        <p className="text-xs font-semibold uppercase">Techpadie Mascot says:</p>
+        <p className="text-base font-medium">{message}</p>
       </div>
-      
-      {/* Call to Action / Icon */}
-      <button 
-        className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium transition flex items-center space-x-2"
+
+      <button
         onClick={() => console.log('Gamification link clicked')}
+        className="flex items-center px-4 py-2 rounded-lg font-semibold text-white transition-colors duration-200"
+        style={{ backgroundColor: '#227FA1', hover: { backgroundColor: '#1A6B8A' } }}
       >
-        <IconComponent className="h-5 w-5" />
-        <span>View Rewards</span>
+        <FireIcon className="h-5 w-5 mr-2" />
+        View Rewards
       </button>
     </div>
   );
