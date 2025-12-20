@@ -1,85 +1,85 @@
 "use client";
 
 import React from 'react';
-import { PlayIcon, ClockIcon } from '@heroicons/react/24/solid';
-import { CourseCardProps } from '@/app/types/dashboard'; 
+import Image from 'next/image';
+import { BookmarkIcon, UserGroupIcon, StarIcon } from '@heroicons/react/24/solid';
+
+interface CourseCardProps {
+  courseTitle: string;
+  imageUrl: string;
+  instructorName: string;
+  instructorAvatar: string;
+  studentCount: number;
+  rating: number;
+  level: string;
+  isEnrolled?: boolean;
+  onAction?: () => void;
+}
 
 export default function CourseCard({
   courseTitle,
-  nextLesson,
-  progressPercentage,
-  timeRemaining,
-  onContinue,
-  imageUrl, 
-  priceUSD, 
-}: CourseCardProps) { 
-  
-  // Use accent color for progress bar
-  const progressBarColor = '#227FA1'; 
-  const progressText = `${progressPercentage}% complete`;
-  const isFree = priceUSD === 0;
-
+  imageUrl,
+  instructorName,
+  instructorAvatar,
+  studentCount,
+  rating,
+  level,
+  isEnrolled,
+}: CourseCardProps) {
   return (
-    // CHANGES: Light Glassmorphism effect applied
-    <div className="bg-white/50 backdrop-blur-md rounded-xl border border-gray-200 shadow-lg flex space-x-4">
+    <div className="flex flex-col bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden p-3">
       
-      {/* Left Section: Image and Status */}
-      <div className="w-48 flex-shrink-0 relative overflow-hidden rounded-l-xl">
-         {/* Placeholder for the dynamic image */}
-         <div 
-          className="w-full h-full bg-cover bg-center" 
-          style={{ backgroundImage: `url(${imageUrl})` }}
-        >
-          {/* Fallback/Image Placeholder */}
-          <div className="w-full h-full bg-gray-300/50 flex items-center justify-center text-sm font-bold text-gray-700">
-            [Course Art]
-          </div>
-        </div>
-        {/* Price/Status Tag - High contrast colors maintained */}
-        <span className={`absolute top-2 left-2 px-3 py-1 rounded-full text-xs font-bold ${isFree ? 'bg-green-600 text-white' : 'bg-yellow-500 text-black'}`}>
-          {isFree ? 'FREE' : `$${priceUSD}`}
-        </span>
+      {/* 1. Image Container */}
+      <div className="relative h-48 w-full rounded-2xl overflow-hidden mb-4">
+        <Image 
+          src={imageUrl} 
+          alt={courseTitle}
+          fill
+          className="object-cover"
+        />
+        {/* Bookmark Icon */}
+        <button className="absolute top-3 right-3 p-2 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white/40 transition-colors">
+          <BookmarkIcon className="h-4 w-4" />
+        </button>
       </div>
 
-      {/* Right Section: Content and Action */}
-      <div className="flex-grow p-5">
-        {/* Title and Next Lesson - Using dark dashboard text */}
-        <h3 className="text-xl font-inter font-semibold" style={{ color: '#000000B2' }}>{courseTitle}</h3>
-        <p className="text-sm font-lexend text-gray-600 mt-1">
-          <span style={{ color: '#227FA1' }} className="font-medium mr-1">Next:</span> {nextLesson}
-        </p>
-
-        {/* Progress Bar and Time */}
-        <div className="mt-4 flex items-center justify-between">
-          <div className="w-2/3">
-            {/* Progress Bar */}
-            <div className="h-2 bg-gray-300 rounded-full overflow-hidden">
-              <div
-                className="h-full"
-                style={{ width: `${progressPercentage}%`, backgroundColor: progressBarColor }}
-              ></div>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">{progressText}</p>
+      {/* 2. Badge & Stats Row */}
+      <div className="flex items-center justify-between px-1 mb-3">
+        <span className="px-4 py-1.5 bg-[#227FA1]/10 text-[#227FA1] text-xs font-bold rounded-lg uppercase tracking-wider">
+          {level}
+        </span>
+        <div className="flex items-center gap-3 text-gray-500 text-sm font-medium">
+          <div className="flex items-center gap-1">
+            <UserGroupIcon className="h-4 w-4 text-gray-400" />
+            {studentCount}
           </div>
-          
-          {/* Time Remaining */}
-          <div className="flex items-center text-sm font-medium text-gray-600">
-            <ClockIcon className="h-4 w-4 mr-1 text-gray-400" />
-            {timeRemaining}
+          <div className="flex items-center gap-1">
+            <StarIcon className="h-4 w-4 text-yellow-400" />
+            {rating.toFixed(1)}
           </div>
         </div>
+      </div>
 
-        {/* Continue Button */}
-        <div className="mt-5 text-right">
-          <button
-            onClick={onContinue}
-            className="inline-flex items-center px-4 py-2 text-white rounded-lg text-sm font-medium transition space-x-2"
-            style={{ backgroundColor: '#227FA1' }}
-          >
-            <PlayIcon className="h-4 w-4" />
-            <span>Continue Learning</span>
-          </button>
+      {/* 3. Title */}
+      <div className="px-1 mb-6 grow">
+        <h3 className="text-[17px] font-bold leading-snug text-gray-800 line-clamp-2">
+          {courseTitle}
+        </h3>
+      </div>
+
+      {/* 4. Instructor & Action Footer */}
+      <div className="flex items-center justify-between px-1 pt-4 border-t border-gray-50">
+        <div className="flex items-center gap-2">
+          <div className="relative h-8 w-8 rounded-full overflow-hidden border border-gray-100">
+            <Image src={instructorAvatar} alt={instructorName} fill className="object-cover" />
+          </div>
+          <span className="text-sm font-bold text-[#227FA1]">{instructorName}</span>
         </div>
+        
+        {/* If you want an enroll button, keep it small or remove for exact Figma look */}
+        {isEnrolled && (
+            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" title="In Progress"></div>
+        )}
       </div>
     </div>
   );
