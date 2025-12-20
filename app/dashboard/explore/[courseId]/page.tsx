@@ -169,9 +169,12 @@ const EnrollmentCard = ({ course }: { course: typeof COURSE_DATA }) => (
     </div>
 
     <div className="space-y-3">
-      <button className="w-full py-4 bg-[#227FA1] hover:bg-[#1a637e] text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition-all active:scale-95">
-        Proceed to course
-      </button>
+     <Link 
+    href={`/dashboard/learn/${course.id}`} // <--- Points to the new Text Learning Page
+    className="block w-full py-4 bg-[#227FA1] hover:bg-[#1a637e] text-white text-center font-bold rounded-xl shadow-lg shadow-blue-200 transition-all active:scale-95"
+  >
+    Proceed to course
+  </Link>
       <button className="w-full py-4 bg-[#F59E0B] hover:bg-[#d97706] text-white font-bold rounded-xl shadow-lg shadow-orange-100 flex items-center justify-center gap-2 transition-all active:scale-95">
         Send a message
         <ChatBubbleLeftRightIcon className="w-5 h-5" />
