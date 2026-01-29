@@ -1,61 +1,73 @@
 "use client";
 
+import React from 'react';
 import Link from 'next/link';
+import { HomeIcon, BookOpenIcon, TrophyIcon, UserCircleIcon, Cog6ToothIcon, WalletIcon } from '@heroicons/react/24/outline';
 import { usePathname } from 'next/navigation';
-import { HomeIcon, BookOpenIcon, GlobeAltIcon, Cog8ToothIcon } from '@heroicons/react/24/outline';
-import { ChevronDoubleLeftIcon } from '@heroicons/react/24/solid';
 
 const navItems = [
-  { name: 'Overview', href: '/dashboard', icon: HomeIcon },
-  { name: 'My Courses', href: '/dashboard/my-courses', icon: BookOpenIcon },
-  { name: 'Explore Courses', href: '/dashboard/explore', icon: GlobeAltIcon },
-  { name: 'Settings', href: '/dashboard/settings', icon: Cog8ToothIcon },
+  { href: '/dashboard', icon: HomeIcon, label: 'Dashboard' },
+  { href: '/dashboard/explore', icon: BookOpenIcon, label: 'Explore Courses' },
+  { href: '/dashboard/my-courses', icon: TrophyIcon, label: 'My Courses' },
+  { href: '/dashboard/rewards', icon: WalletIcon, label: 'Rewards' },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
 
-  // Helper component for individual navigation links
-  const NavLink = ({ item }: { item: typeof navItems[0] }) => {
-    const isActive = pathname === item.href;
-    return (
-      <Link
-        href={item.href}
-        className={`
-          flex items-center space-x-3 px-4 py-3 rounded-xl transition-all font-inter font-medium text-sm
-          ${isActive
-            ? 'bg-purple-700 text-white shadow-lg' 
-            : 'text-zinc-400 hover:bg-zinc-800 hover:text-white' 
-          }
-        `}
-      >
-        <item.icon className="h-5 w-5" />
-        <span>{item.name}</span>
-      </Link>
-    );
-  };
-
   return (
-    <div className="flex flex-col h-full bg-[#111827] text-white p-4 w-64 fixed top-0 left-0">
+    <div 
+      className="fixed top-0 left-0 h-full w-64 flex flex-col shadow-xl z-30 text-white"
+      style={{ backgroundColor: '#227FA1' }} 
+    >
       
-      {/* Logo/Brand (Eduflex replaced with Techpadie style) */}
-      <div className="flex items-center justify-between h-16 px-2 mb-8">
-        <span className="text-2xl font-inter font-bold text-teal-400">Techpadie</span>
-        <button aria-label="Collapse Sidebar" className="text-zinc-400 hover:text-white transition">
-            <ChevronDoubleLeftIcon className="h-5 w-5" />
-        </button>
+      {/* Logo Area */}
+      <div className="p-6 flex items-center h-20 border-b border-white/20">
+        <span className="text-2xl font-bold font-inter">
+          Techpadie
+        </span>
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex flex-col space-y-2 grow">
-        {navItems.map((item) => (
-          <NavLink key={item.name} item={item} />
-        ))}
+      <nav className="flex-grow p-4 space-y-2">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          
+          return (
+            <Link 
+              key={item.href} 
+              href={item.href}
+              className={`
+                flex items-center p-3 rounded-lg transition-colors duration-200 
+                ${isActive 
+                  ? 'font-semibold text-gray-900 bg-white' 
+                  : 'hover:bg-white/10 text-white' 
+                }
+              `}
+            >
+              <item.icon className="h-6 w-6 mr-3" />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
       </nav>
-      
-     
-      <div className="mt-4 pt-4 border-t border-zinc-700">
-        <p className="text-xs text-zinc-500">DA | John Doe</p>
+
+      {/* Footer Links (User/Settings) */}
+      <div className="p-4 border-t border-white/20 space-y-2">
+        <Link 
+          href="/dashboard/profile" 
+          className="flex items-center p-3 rounded-lg text-white hover:bg-white/10 transition-colors duration-200"
+        >
+          <UserCircleIcon className="h-6 w-6 mr-3" />
+          <span>Profile</span>
+        </Link>
+        <Link 
+          href="/dashboard/settings" 
+          className="flex items-center p-3 rounded-lg text-white hover:bg-white/10 transition-colors duration-200"
+        >
+          <Cog6ToothIcon className="h-6 w-6 mr-3" />
+          <span>Settings</span>
+        </Link>
       </div>
     </div>
   );
