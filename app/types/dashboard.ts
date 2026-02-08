@@ -46,6 +46,7 @@ export interface CourseCardProps {
   onContinue: () => void; 
   imageUrl: string;
   priceUSD: number;
+  isEnrolled?: boolean;
 }
 
 export interface CourseContent {

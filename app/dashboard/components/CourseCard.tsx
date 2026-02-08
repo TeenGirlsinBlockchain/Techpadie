@@ -11,6 +11,7 @@ interface CourseCardProps {
   imageUrl: string;
   level: 'Beginner' | 'Intermediate' | 'Advanced';
   duration: string;
+  isEnrolled?: boolean;
   studentCount: number;
   rating: number;
   instructorName: string;
