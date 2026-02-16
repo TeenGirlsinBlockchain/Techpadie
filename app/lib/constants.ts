@@ -41,3 +41,5 @@ export const COURSE_CATEGORIES: { key: CourseCategory; label: string }[] = [
   { key: 'trading-markets', label: 'Trading & Markets' },
   { key: 'development', label: 'Development' },
 ];
+
+export const PLAYBACK_SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
