@@ -1,4 +1,4 @@
-// types/user.ts
+import type { LanguageCode } from './i18n';
 export interface User {
   id: string;
   name: string;
@@ -201,4 +201,22 @@ export interface TranslationKeys {
   'general.search': string;
   'general.noResults': string;
   'general.loading': string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  preferredLanguage: LanguageCode;
+  role: 'student' | 'instructor' | 'admin';
+  createdAt: string;
+}
+
+export interface UserPreferences {
+  preferredLanguage: LanguageCode;
+  dailyGoalMinutes: number;
+  emailNotifications: boolean;
+  audioAutoplay: boolean;
+  playbackSpeed: number;
 }
