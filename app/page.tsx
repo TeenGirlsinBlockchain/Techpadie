@@ -5,7 +5,7 @@ import { motion, useScroll, useSpring } from 'framer-motion';
 import LandingNavbar from './components/landing/LandingNavbar';
 import Hero from './components/landing/Hero';
 import AdaMascot from './components/mascot/AdaMascot';
-import { PremiumCard } from './components/PremiumCard';
+import { PremiumCard } from './components/landing/PremiumCard';
 import { 
   CurrencyDollarIcon, 
   AcademicCapIcon, 

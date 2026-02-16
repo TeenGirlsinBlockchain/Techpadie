@@ -34,3 +34,17 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+
+So my app folder has these folders 
+_styles, -> global.css
+components which then has two seperate folders which are landing -> these has files for the landing page, then mascot which has a file for the mascot
+dashboard folder which then has 4 folders which are explore for the explore button on the sidebar, learn, my courses those folders have files for those sidebar buttons matching accordingly then the dashboard folder has the layout and page file.
+then there is a folder called email verification
+lib which has a dashboard.ts
+login
+onboarding
+signup 
+types which has another dashboard.ts
+then the app has page.tsx and layout.tsx in the main app folder
