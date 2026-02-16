@@ -116,7 +116,7 @@ export default function DashboardClientWrapper({ statData, courseData }: DataPro
                     {renderMotivationCard()}
                     
                     {/* Extra placeholder for system consistency */}
-                    <div className="p-6 rounded-[24px] border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-center py-10">
+                    <div className="p-6 rounded-3xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-center py-10">
                         <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mb-3">
                             <span className="text-2xl">🏆</span>
                         </div>
