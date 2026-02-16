@@ -2,7 +2,7 @@
 
 import React from 'react';
 import MascotBanner from '../components/MascotBanner';
-import CourseCard from '../components/CourseCard'; 
+import CourseCard from '../components/cards/CourseCard'; 
 import { CheckCircleIcon, BookOpenIcon } from '@heroicons/react/24/outline';
 
 // --- ENHANCED MOCK DATA ---

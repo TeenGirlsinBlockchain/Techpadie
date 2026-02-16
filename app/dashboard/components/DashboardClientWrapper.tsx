@@ -4,8 +4,8 @@
 "use client";
 
 import React from 'react';
-import StatCard from './StatCard';
-import CourseCard from './CourseCard';
+import StatCard from './cards/StatCard';
+import CourseCard from './cards/CourseCard';
 import Link from 'next/link';
 import { ClockIcon, FireIcon, SparklesIcon } from '@heroicons/react/24/outline';
 

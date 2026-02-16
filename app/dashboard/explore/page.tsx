@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { MagnifyingGlassIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import CourseCard from '../components/CourseCard'; // Using the Master Card
+import CourseCard from '../components/cards/CourseCard'; // Using the Master Card
 import { ExploreCourse, CourseCategory } from '@/app/types/dashboard';
 
 // --- MOCK DATA (Enhanced with Images & Instructors) ---
