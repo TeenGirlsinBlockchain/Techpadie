@@ -1,5 +1,4 @@
 import React from 'react';
-import LanguageSwitcher from '@/app/dashboard/components/LanguageSwitcher'; 
 import { BellIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { UserCircleIcon } from '@heroicons/react/24/solid'; 
 
@@ -22,8 +21,7 @@ export default function DashboardHeader() {
       {/* 2. Actions Area */}
       <div className="flex items-center space-x-3 md:space-x-6 w-full md:w-auto justify-end">
         
-        {/* The Language Switcher */}
-        <LanguageSwitcher />
+      
 
         {/* Notifications */}
         <button className="relative p-2.5 rounded-xl bg-white border border-gray-200 text-gray-500 hover:text-[#227FA1] hover:border-[#227FA1] transition-all shadow-sm">
