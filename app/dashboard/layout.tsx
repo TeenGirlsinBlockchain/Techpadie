@@ -1,6 +1,6 @@
 import React from 'react';
-import Sidebar from './components/Sidebar';
-import DashboardHeader from './components/DashboardHeader'; 
+import Sidebar from './components/layout/Sidebar';
+import DashboardHeader from './components/layout/DashboardHeader'; 
 import GoogleTranslate from './components/GoogleTranslate';
 // NOTE: You would need to configure a custom color for #000000B2 
 
