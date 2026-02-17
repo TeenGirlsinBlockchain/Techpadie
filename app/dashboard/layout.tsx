@@ -18,18 +18,18 @@ export default function DashboardLayout({
         <GamificationProvider>
           <AudioProvider>
             <div className="flex min-h-screen bg-surface-secondary text-text-primary">
-              {/* Desktop Sidebar */}
+              {/* Desktop Sidebar — hidden below lg */}
               <Sidebar />
 
               {/* Main content area */}
-              <main className="flex-1 lg:ml-sidebar px-4 md:px-8 lg:px-10 pb-mobile-nav lg:pb-8 pt-2 lg:pt-4">
+              <main className="relative flex-1 lg:ml-sidebar px-3 sm:px-4 md:px-8 lg:px-10 pb-20 lg:pb-8 pt-1 lg:pt-2 min-w-0">
                 <DashboardHeader />
                 <div className="max-w-7xl mx-auto">
                   {children}
                 </div>
               </main>
 
-              {/* Mobile Bottom Tab Bar */}
+              {/* Mobile Bottom Tab Bar — hidden above lg */}
               <MobileNav />
             </div>
           </AudioProvider>
