@@ -3,6 +3,7 @@ import type {
   Enrollment,
   ActivityItem,
   StatCardData,
+   Flashcard, QuizQuestion, LessonGeneratedContent 
 } from '@/app/types';
 
 // ─── Mock Courses (Explore / Sale) ───────────────────────────────
@@ -321,3 +322,38 @@ export const DAILY_TIPS = [
   'Consistency beats intensity — a 10-minute streak is better than a 2-hour sprint.',
   'DeFi protocols manage over $50B in assets. Understanding them is a superpower.',
 ];
+
+export const MOCK_GENERATED_CONTENT: Record<string, LessonGeneratedContent> = {
+  les_001: {
+    lessonId: 'les_001',
+    locale: 'en',
+    flashcards: [
+      { id: 'fc_001', front: 'What is a blockchain?', back: 'A distributed, immutable digital ledger that records transactions across a network of computers. Each block contains a cryptographic hash of the previous block, creating an unbreakable chain.', difficulty: 'easy' },
+      { id: 'fc_002', front: 'What is decentralization?', back: 'A system where no single entity has control. In blockchain, data is distributed across thousands of nodes, making it resistant to censorship and single points of failure.', difficulty: 'easy' },
+      { id: 'fc_003', front: 'What is a cryptographic hash?', back: 'A one-way mathematical function that converts any input into a fixed-length string of characters. Even a tiny change in the input produces a completely different output.', difficulty: 'medium' },
+      { id: 'fc_004', front: 'What problem does blockchain solve?', back: 'The double-spending problem — ensuring digital assets cannot be copied or spent twice without needing a trusted intermediary like a bank.', difficulty: 'medium' },
+      { id: 'fc_005', front: 'What is a distributed ledger?', back: 'A database that is shared, replicated, and synchronized across multiple nodes in a network. Every participant holds an identical copy of the ledger.', difficulty: 'easy' },
+      { id: 'fc_006', front: 'What makes a blockchain immutable?', back: 'Each block contains the hash of the previous block. Altering any block would change its hash, breaking the chain — which would be detected by every node in the network.', difficulty: 'hard' },
+    ],
+    quiz: [
+      { id: 'q_001', question: 'What is the primary innovation that blockchain technology provides?', options: [{ id: 'q1_a', text: 'Faster internet speeds', isCorrect: false }, { id: 'q1_b', text: 'A way to store data that cannot be altered retroactively', isCorrect: true }, { id: 'q1_c', text: 'A new programming language', isCorrect: false }, { id: 'q1_d', text: 'Cheaper cloud computing', isCorrect: false }], explanation: 'Blockchain\'s core innovation is immutability — once data is recorded in a block and added to the chain, it cannot be altered without detection.', xpReward: 10 },
+      { id: 'q_002', question: 'What is the "double-spending problem"?', options: [{ id: 'q2_a', text: 'When a transaction takes too long to process', isCorrect: false }, { id: 'q2_b', text: 'When digital money is copied and used in two places', isCorrect: true }, { id: 'q2_c', text: 'When mining costs exceed the reward', isCorrect: false }, { id: 'q2_d', text: 'When two blockchains merge into one', isCorrect: false }], explanation: 'The double-spending problem is the risk that a digital token could be duplicated and spent more than once. Blockchain prevents this through consensus mechanisms.', xpReward: 10 },
+      { id: 'q_003', question: 'How does a cryptographic hash contribute to blockchain security?', options: [{ id: 'q3_a', text: 'It encrypts all transactions so nobody can read them', isCorrect: false }, { id: 'q3_b', text: 'It creates a unique fingerprint for each block that changes if the data is modified', isCorrect: true }, { id: 'q3_c', text: 'It speeds up the network by compressing data', isCorrect: false }, { id: 'q3_d', text: 'It allows users to recover lost passwords', isCorrect: false }], explanation: 'A cryptographic hash produces a unique fixed-length output for any given input. Any change to the block data produces a completely different hash, making tampering immediately detectable.', xpReward: 10 },
+      { id: 'q_004', question: 'What does "decentralization" mean in the context of blockchain?', options: [{ id: 'q4_a', text: 'The blockchain runs on a single powerful server', isCorrect: false }, { id: 'q4_b', text: 'One company controls all the data', isCorrect: false }, { id: 'q4_c', text: 'Control and data are distributed across many nodes in the network', isCorrect: true }, { id: 'q4_d', text: 'Only governments can operate blockchain nodes', isCorrect: false }], explanation: 'Decentralization means no single entity controls the network. Data is distributed across thousands of nodes.', xpReward: 10 },
+    ],
+    generatedAt: '2025-02-15T00:00:00Z',
+  },
+  les_002: {
+    lessonId: 'les_002',
+    locale: 'en',
+    flashcards: [
+      { id: 'fc_101', front: 'What is Proof of Work (PoW)?', back: 'A consensus mechanism where miners compete to solve complex mathematical puzzles. The first to solve it gets to add the next block and receives a reward.', difficulty: 'medium' },
+      { id: 'fc_102', front: 'What is Proof of Stake (PoS)?', back: 'A consensus mechanism where validators are chosen to create blocks based on the amount of cryptocurrency they hold and "stake" as collateral.', difficulty: 'medium' },
+      { id: 'fc_103', front: 'Why do blockchains need consensus mechanisms?', back: 'To ensure all nodes in the network agree on the current state of the ledger without needing a central authority to validate transactions.', difficulty: 'easy' },
+    ],
+    quiz: [
+      { id: 'q_101', question: 'What is the main difference between Proof of Work and Proof of Stake?', options: [{ id: 'q101_a', text: 'PoW uses computational puzzles; PoS uses staked cryptocurrency', isCorrect: true }, { id: 'q101_b', text: 'PoW is faster than PoS', isCorrect: false }, { id: 'q101_c', text: 'PoS requires more electricity than PoW', isCorrect: false }, { id: 'q101_d', text: 'There is no difference', isCorrect: false }], explanation: 'PoW requires miners to solve computational puzzles (consuming energy), while PoS selects validators based on the amount of cryptocurrency they stake as collateral.', xpReward: 10 },
+    ],
+    generatedAt: '2025-02-15T00:00:00Z',
+  },
+};

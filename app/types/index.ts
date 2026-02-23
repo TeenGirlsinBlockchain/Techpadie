@@ -12,3 +12,10 @@ export type {
 } from './audio';
 export type { ActivityItem, ActivityType } from './activity';
 export type { LanguageCode, Language, TranslationKeys } from './i18n';
+export type {
+  Flashcard, QuizOption, QuizQuestion, LessonGeneratedContent, LessonTab,
+  LessonProgress, TTSState,
+} from './learn';
+
+
+
