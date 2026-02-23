@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Lexend } from "next/font/google";
+import { Inter, Lexend, Caveat, Kalam } from "next/font/google";
 import { Toaster } from 'react-hot-toast';
 
 import "@/app/_styles/globals.css";
@@ -12,6 +12,17 @@ const inter = Inter({
 const lexend = Lexend({
   subsets: ["latin"],
   variable: "--font-lexend",
+});
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-caveat",
+});
+
+const kalam = Kalam({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-kalam",
 });
 
 export const metadata: Metadata = {
@@ -28,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${lexend.variable} antialiased bg-white text-[#0F172A]`}
+        className={`${inter.variable} ${lexend.variable} ${caveat.variable} ${kalam.variable} antialiased bg-white text-[#0F172A]`}
       >
         {children}
         <Toaster position="top-right" />
