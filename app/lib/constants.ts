@@ -39,7 +39,9 @@ export const SUPPORTED_LANGUAGES: Language[] = [
   { code: 'pt', name: 'Portuguese', nativeName: 'Português', direction: 'ltr' },
 ];
 
-export const COURSE_CATEGORIES: { key: CourseCategory; label: string }[] = [
+export const COURSE_CATEGORIES: {
+  labelKey: any; key: CourseCategory; label: string 
+}[] = [
   { key: 'fundamentals', label: 'Fundamentals' },
   { key: 'smart-contracts', label: 'Smart Contracts' },
   { key: 'defi', label: 'DeFi' },
