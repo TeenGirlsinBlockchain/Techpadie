@@ -1,0 +1,520 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  STUDENT
+  CREATOR
+  ADMIN
+}
+
+enum CreatorStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum CourseStatus {
+  DRAFT
+  PENDING_REVIEW
+  PUBLISHED
+  REJECTED
+  ARCHIVED
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum CourseCategory {
+  BLOCKCHAIN_BASICS
+  DEFI
+  NFTS
+  SMART_CONTRACTS
+  TRADING
+  SECURITY
+  WEB3_DEV
+  TOKENOMICS
+  DIGITAL_SKILLS
+  OTHER
+}
+
+enum Language {
+  EN
+  FR
+  AR
+  SW
+  HA
+  PT
+}
+
+enum GeneratedContentType {
+  QUIZ
+  FLASHCARDS
+  SUMMARY
+}
+
+enum GeneratedContentStatus {
+  QUEUED
+  GENERATING
+  READY
+  FAILED
+}
+
+enum AudioStatus {
+  QUEUED
+  GENERATING
+  READY
+  FAILED
+}
+
+enum JobType {
+  GENERATE_QUIZ
+  GENERATE_FLASHCARDS
+  GENERATE_SUMMARY
+  GENERATE_AUDIO
+  TRANSFER_TOKENS
+  GENERATE_CERTIFICATE
+}
+
+enum JobStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+  DEAD
+}
+
+enum AuditAction {
+  USER_SIGNUP
+  USER_LOGIN
+  USER_LOGIN_FAILED
+  OTP_SENT
+  OTP_VERIFIED
+  OTP_FAILED
+  SESSION_CREATED
+  SESSION_DESTROYED
+  PASSWORD_RESET_REQUESTED
+  PASSWORD_RESET_COMPLETED
+  CREATOR_APPLIED
+  CREATOR_APPROVED
+  CREATOR_REJECTED
+  COURSE_CREATED
+  COURSE_SUBMITTED
+  COURSE_APPROVED
+  COURSE_REJECTED
+  COURSE_ARCHIVED
+  ENROLLMENT_CREATED
+  LESSON_COMPLETED
+  QUIZ_ATTEMPTED
+  REWARD_CLAIMED
+  TOKEN_TRANSFERRED
+  CERTIFICATE_ISSUED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  displayName   String    @map("display_name")
+  role          UserRole  @default(STUDENT)
+  isActive      Boolean   @default(true) @map("is_active")
+  emailVerified Boolean   @default(false) @map("email_verified")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  sessions        Session[]
+  otpCodes        OtpCode[]
+  creatorProfile  CreatorProfile?
+  enrollments     Enrollment[]
+  lessonProgress  LessonProgress[]
+  quizAttempts    QuizAttempt[]
+  tokenLedger     TokenLedger[]
+  certificates    Certificate[]
+  auditLogs       AuditLog[]
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model OtpCode {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  codeHash    String    @map("code_hash")
+  purpose     String    @default("login")
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(5) @map("max_attempts")
+  expiresAt   DateTime  @map("expires_at")
+  usedAt      DateTime? @map("used_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose])
+  @@index([expiresAt])
+  @@map("otp_codes")
+}
+
+model AuditLog {
+  id        String      @id @default(cuid())
+  userId    String?     @map("user_id")
+  action    AuditAction
+  metadata  Json?
+  ipAddress String?     @map("ip_address")
+  userAgent String?     @map("user_agent")
+  createdAt DateTime    @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model CreatorProfile {
+  id              String        @id @default(cuid())
+  userId          String        @unique @map("user_id")
+  bio             String?
+  expertise       String[]      @default([])
+  website         String?
+  socialLinks     Json?         @map("social_links")
+  status          CreatorStatus @default(PENDING)
+  rejectionReason String?       @map("rejection_reason")
+  reviewedAt      DateTime?     @map("reviewed_at")
+  reviewedBy      String?       @map("reviewed_by")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("creator_profiles")
+}
+
+model Course {
+  id              String         @id @default(cuid())
+  creatorId       String         @map("creator_id")
+  slug            String         @unique
+  defaultLanguage Language       @default(EN) @map("default_language")
+  level           CourseLevel    @default(BEGINNER)
+  category        CourseCategory @default(BLOCKCHAIN_BASICS)
+  status          CourseStatus   @default(DRAFT)
+  thumbnailUrl    String?        @map("thumbnail_url")
+  estimatedHours  Float?         @map("estimated_hours")
+  rejectionReason String?        @map("rejection_reason")
+  publishedAt     DateTime?      @map("published_at")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  translations  CourseTranslation[]
+  modules       Module[]
+  enrollments   Enrollment[]
+  rewardConfig  RewardConfig?
+  tokenLedger   TokenLedger[]
+  certificates  Certificate[]
+
+  @@index([creatorId])
+  @@index([status])
+  @@index([category])
+  @@index([slug])
+  @@map("courses")
+}
+
+model CourseTranslation {
+  id          String   @id @default(cuid())
+  courseId     String   @map("course_id")
+  language    Language
+  title       String
+  description String
+  tags        String[] @default([])
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, language])
+  @@index([language])
+  @@map("course_translations")
+}
+
+model Module {
+  id        String   @id @default(cuid())
+  courseId   String   @map("course_id")
+  sortOrder Int      @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  course       Course              @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  translations ModuleTranslation[]
+  lessons      Lesson[]
+
+  @@index([courseId, sortOrder])
+  @@map("modules")
+}
+
+model ModuleTranslation {
+  id        String   @id @default(cuid())
+  moduleId  String   @map("module_id")
+  language  Language
+  title     String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  module Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@unique([moduleId, language])
+  @@map("module_translations")
+}
+
+model Lesson {
+  id        String   @id @default(cuid())
+  moduleId  String   @map("module_id")
+  sortOrder Int      @map("sort_order")
+  duration  String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  module           Module              @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  translations     LessonTranslation[]
+  generatedContent GeneratedContent[]
+  audioAssets      AudioAsset[]
+  progress         LessonProgress[]
+  quizAttempts     QuizAttempt[]
+
+  @@index([moduleId, sortOrder])
+  @@map("lessons")
+}
+
+model LessonTranslation {
+  id          String   @id @default(cuid())
+  lessonId    String   @map("lesson_id")
+  language    Language
+  title       String
+  content     String
+  contentHash String   @map("content_hash")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([lessonId, language])
+  @@index([contentHash])
+  @@map("lesson_translations")
+}
+
+model GeneratedContent {
+  id          String                 @id @default(cuid())
+  lessonId    String                 @map("lesson_id")
+  language    Language
+  type        GeneratedContentType
+  contentHash String                 @map("content_hash")
+  version     Int                    @default(1)
+  status      GeneratedContentStatus @default(QUEUED)
+  data        Json?
+  errorMsg    String?                @map("error_msg")
+  createdAt   DateTime               @default(now()) @map("created_at")
+  updatedAt   DateTime               @updatedAt @map("updated_at")
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([lessonId, language, type, contentHash])
+  @@index([lessonId, language, type, status])
+  @@map("generated_contents")
+}
+
+model AudioAsset {
+  id           String      @id @default(cuid())
+  lessonId     String      @map("lesson_id")
+  language     Language
+  contentHash  String      @map("content_hash")
+  provider     String      @default("gemini")
+  url          String?
+  durationSecs Float?      @map("duration_secs")
+  status       AudioStatus @default(QUEUED)
+  errorMsg     String?     @map("error_msg")
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([lessonId, language, contentHash])
+  @@index([lessonId, language, status])
+  @@map("audio_assets")
+}
+
+model Enrollment {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  courseId     String    @map("course_id")
+  language    Language  @default(EN)
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@map("enrollments")
+}
+
+model LessonProgress {
+  id                String    @id @default(cuid())
+  userId            String    @map("user_id")
+  lessonId          String    @map("lesson_id")
+  isCompleted       Boolean   @default(false) @map("is_completed")
+  completedAt       DateTime? @map("completed_at")
+  audioPositionSecs Float     @default(0) @map("audio_position_secs")
+  lastAccessedAt    DateTime  @default(now()) @map("last_accessed_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
+  @@map("lesson_progress")
+}
+
+model QuizAttempt {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  lessonId  String   @map("lesson_id")
+  language  Language
+  answers   Json
+  score     Float
+  totalQs   Int      @map("total_questions")
+  correctQs Int      @map("correct_questions")
+  passed    Boolean
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([userId, lessonId])
+  @@index([userId, passed])
+  @@map("quiz_attempts")
+}
+
+model RewardConfig {
+  id                String   @id @default(cuid())
+  courseId           String   @unique @map("course_id")
+  tokensAmount      Float    @map("tokens_amount")
+  tokenSymbol       String   @default("FLR") @map("token_symbol")
+  chainNetwork      String   @default("flare") @map("chain_network")
+  quizPassThreshold Float    @default(70) @map("quiz_pass_threshold")
+  isActive          Boolean  @default(true) @map("is_active")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@map("reward_configs")
+}
+
+model TokenLedger {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  courseId       String    @map("course_id")
+  amount        Float
+  tokenSymbol   String    @map("token_symbol")
+  chainNetwork  String    @map("chain_network")
+  txHash        String?   @map("tx_hash")
+  walletAddress String?   @map("wallet_address")
+  status        String    @default("pending")
+  errorMsg      String?   @map("error_msg")
+  claimedAt     DateTime  @default(now()) @map("claimed_at")
+  completedAt   DateTime? @map("completed_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([status])
+  @@map("token_ledger")
+}
+
+model Certificate {
+  id              String   @id @default(cuid())
+  userId          String   @map("user_id")
+  courseId         String   @map("course_id")
+  certificateNo   String   @unique @map("certificate_no")
+  studentName     String   @map("student_name")
+  courseTitle      String   @map("course_title")
+  quizScore       Float    @map("quiz_score")
+  issuedAt        DateTime @default(now()) @map("issued_at")
+  verificationUrl String   @map("verification_url")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([certificateNo])
+  @@map("certificates")
+}
+
+model Job {
+  id          String    @id @default(cuid())
+  type        JobType
+  payload     Json
+  status      JobStatus @default(QUEUED)
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(3) @map("max_attempts")
+  lastError   String?   @map("last_error")
+  lockedAt    DateTime? @map("locked_at")
+  lockedBy    String?   @map("locked_by")
+  scheduledAt DateTime  @default(now()) @map("scheduled_at")
+  startedAt   DateTime? @map("started_at")
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@index([status, scheduledAt])
+  @@index([lockedAt])
+  @@index([type, status])
+  @@map("jobs")
+}
+
+model RateLimitEntry {
+  id          String   @id @default(cuid())
+  key         String
+  hitCount    Int      @default(1) @map("hit_count")
+  windowStart DateTime @map("window_start")
+  expiresAt   DateTime @map("expires_at")
+
+  @@unique([key, windowStart])
+  @@index([key])
+  @@index([expiresAt])
+  @@map("rate_limit_entries")
+}
