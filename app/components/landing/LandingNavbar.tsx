@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import LanguageSwitcher from '../../dashboard/components/LanguageSwitcher';
 
 export default function LandingNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -37,7 +36,7 @@ export default function LandingNavbar() {
 
         {/* ACTIONS */}
         <div className="hidden md:flex items-center gap-4">
-          <LanguageSwitcher />
+         
           
           <Link href="/login" className="px-6 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-50 rounded-xl transition">
             Log in

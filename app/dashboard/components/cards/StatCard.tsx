@@ -1,82 +1,66 @@
-"use client";
+'use client';
 
 import React from 'react';
-import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
-import { BoltIcon, ClockIcon, TrophyIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/solid';
+import { useTranslation } from '@/app/lib/i18n/useTranslation';
+import type { StatCardData } from '@/app/types';
+import {
+  FireIcon,
+  BoltIcon,
+  AcademicCapIcon,
+  ChartBarIcon,
+  ClockIcon,
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon,
+} from '@heroicons/react/24/solid';
 
-// Define a mapping for icons based on the metric key
-const iconMap = {
-  courses: BoltIcon,
-  hours: ClockIcon,
-  streak: TrophyIcon,
-  quizzes: QuestionMarkCircleIcon,
+const ICON_MAP: Record<string, React.ElementType> = {
+  streak: FireIcon,
+  xp: BoltIcon,
+  'courses-completed': AcademicCapIcon,
+  level: ChartBarIcon,
+  'weekly-time': ClockIcon,
 };
 
-interface StatCardProps {
-  // Use a string key for easy identification and icon mapping
-  metricKey: 'courses' | 'hours' | 'streak' | 'quizzes';
-  title: string;
-  value: string | number;
-  change: string; // e.g., "+32% from last week"
-  changeType: 'positive' | 'negative' | 'neutral'; // For dynamic color coding
-  unit?: string; // e.g., "days", "hours"
-}
+const ICON_COLOR_MAP: Record<string, string> = {
+  streak: 'bg-orange-50 text-gamification-streak',
+  xp: 'bg-violet-50 text-gamification-xp',
+  'courses-completed': 'bg-emerald-50 text-feedback-success',
+  level: 'bg-brand-50 text-brand-500',
+  'weekly-time': 'bg-sky-50 text-sky-500',
+};
 
-export default function StatCard({
-  metricKey,
-  title,
-  value,
-  change,
-  changeType,
-  unit,
-}: StatCardProps) {
-  
-  const IconComponent = iconMap[metricKey];
-  
-  // Determine color classes based on changeType
-  const changeColor = changeType === 'positive' ? 'text-green-600' : // Darker color for white background
-                      changeType === 'negative' ? 'text-red-600' : 
-                      'text-gray-500';
-
-  const ChangeIcon = changeType === 'positive' ? ArrowUpIcon : ArrowDownIcon;
+export default function StatCard({ metricKey, label, value, unit, change, changeType }: StatCardData) {
+  const { t } = useTranslation();
+  const Icon = ICON_MAP[metricKey] || BoltIcon;
+  const iconColor = ICON_COLOR_MAP[metricKey] || 'bg-gray-50 text-gray-500';
 
   return (
-    // Outer Container: Wavy Glassmorphism style applied
-    <div className="relative bg-white/50 backdrop-blur-md p-5 rounded-xl border border-gray-200 shadow-lg transition-shadow hover:shadow-xl overflow-hidden">
-      
-      {/* Wavy Overlay Effect (Accent Blue with low opacity) */}
-      <div 
-        className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage: `radial-gradient(circle at 100% 0%, rgba(34, 127, 161, 0.2) 0%, transparent 50%), 
-                            radial-gradient(circle at 0% 100%, rgba(34, 127, 161, 0.2) 0%, transparent 50%)`,
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: '150% 150%'
-        }}
-      ></div>
-
-      {/* Content (Z-indexed above the wave effect) */}
-      <div className="relative z-10 flex flex-col justify-between h-full">
-        
-        {/* Icon and Title */}
-        <div className="flex items-center justify-between mb-2">
-          {/* Title: Darker color for white background */}
-          <h3 className="text-sm font-lexend text-gray-500 uppercase tracking-wider">{title}</h3>
-          {/* Icon: Uses Accent Blue */}
-          {IconComponent && <IconComponent className="h-5 w-5" style={{ color: '#227FA1' }} />}
-        </div>
-        
-        {/* Value */}
-        <p className="text-3xl font-inter font-bold mb-1" style={{ color: '#000000B2' }}>
-          {value} {unit && <span className="text-sm font-medium text-gray-500">{unit}</span>}
+    <div className="bg-white rounded-xl border border-gray-100 p-4 md:p-5 hover:shadow-md transition-shadow duration-200 cursor-default">
+      <div className="flex items-start justify-between mb-3">
+        <p className="text-xs font-semibold text-text-tertiary uppercase tracking-wider">
+          {t(label as any)}
         </p>
-        
-        {/* Change/Delta */}
-        <div className={`flex items-center text-xs font-medium ${changeColor}`}>
-          <ChangeIcon className="h-3 w-3 mr-1" />
-          {change}
+        <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${iconColor}`}>
+          <Icon className="h-4 w-4" />
         </div>
       </div>
+
+      <p className="text-2xl md:text-3xl font-bold text-text-primary leading-none mb-1">
+        {value}
+        {unit && <span className="text-sm font-medium text-text-tertiary ml-1">{unit}</span>}
+      </p>
+
+      {change && (
+        <div className={`flex items-center gap-1 text-xs font-medium mt-2 ${
+          changeType === 'positive' ? 'text-feedback-success' :
+          changeType === 'negative' ? 'text-feedback-error' :
+          'text-text-tertiary'
+        }`}>
+          {changeType === 'positive' && <ArrowTrendingUpIcon className="h-3 w-3" />}
+          {changeType === 'negative' && <ArrowTrendingDownIcon className="h-3 w-3" />}
+          <span>{change}</span>
+        </div>
+      )}
     </div>
   );
 }

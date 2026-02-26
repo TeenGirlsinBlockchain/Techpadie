@@ -1,27 +1,323 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Kalam:wght@300;400;700&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* ─── Tailwind v4: Design Tokens ────────────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Brand — #227FA1 */
+  --color-brand-50: #EBF5F9;
+  --color-brand-100: #D0E8F1;
+  --color-brand-200: #A1D1E3;
+  --color-brand-300: #72BAD5;
+  --color-brand-400: #43A3C7;
+  --color-brand-500: #227FA1;
+  --color-brand-600: #1B6681;
+  --color-brand-700: #154C61;
+  --color-brand-800: #0E3340;
+  --color-brand-900: #071920;
+
+  /* Surface (dashboard) */
+  --color-surface-DEFAULT: #FFFFFF;
+  --color-surface-secondary: #F8FAFC;
+  --color-surface-tertiary: #F1F5F9;
+
+  /* Text */
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #94A3B8;
+  --color-text-inverse: #FFFFFF;
+
+  /* Feedback */
+  --color-feedback-success: #16A34A;
+  --color-feedback-warning: #F59E0B;
+  --color-feedback-error: #DC2626;
+  --color-feedback-info: #227FA1;
+
+  /* Gamification */
+  --color-gamification-xp: #8B5CF6;
+  --color-gamification-streak: #F97316;
+  --color-gamification-achievement: #EAB308;
+  --color-gamification-level: #227FA1;
+
+  /* ═══ CHALKBOARD THEME ═══════════════════════════════════════ */
+  /* Board surface — real green chalkboard */
+  --color-chalk-board: #2B4C3F;
+  --color-chalk-board-deep: #1E3A2F;
+  --color-chalk-board-light: #345E4D;
+  --color-chalk-tray: #1A2B23;
+
+  /* Chalk colors — slightly rough / imperfect look */
+  --color-chalk-white: #E8E4D4;
+  --color-chalk-white-dim: #B8B4A4;
+  --color-chalk-yellow: #F2D16B;
+  --color-chalk-blue: #7CC4E8;
+  --color-chalk-pink: #E8A0BF;
+  --color-chalk-orange: #E8A87C;
+  --color-chalk-green: #90C9A0;
+  --color-chalk-red: #DB7B7B;
+
+  /* UI surfaces on the board */
+  --color-chalk-surface: rgba(255, 255, 255, 0.06);
+  --color-chalk-surface-hover: rgba(255, 255, 255, 0.10);
+  --color-chalk-border: rgba(255, 255, 255, 0.12);
+  --color-chalk-divider: rgba(255, 255, 255, 0.08);
+
+  /* Fonts */
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-lexend), var(--font-inter), sans-serif;
+  --font-chalk: 'Caveat', cursive;
+  --font-chalk-body: 'Kalam', cursive;
+
+  /* Spacing */
+  --spacing-sidebar: 16rem;
+  --spacing-mobile-nav: 4.5rem;
+
+  /* Animations */
+  --animate-fade-in: fade-in 0.3s ease-out;
+  --animate-slide-up: slide-up 0.3s ease-out;
+  --animate-scale-in: scale-in 0.2s ease-out;
+  --animate-pulse-soft: pulse-soft 2s ease-in-out infinite;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ─── Keyframes ─────────────────────────────────────────────────── */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ─── Base Styles ───────────────────────────────────────────────── */
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────────── */
+.scrollbar-thin::-webkit-scrollbar { width: 4px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 999px; }
+.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Dark scrollbar for chalkboard */
+.scrollbar-chalk::-webkit-scrollbar { width: 5px; }
+.scrollbar-chalk::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-chalk::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 999px; }
+.scrollbar-chalk::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+
+/* ─── Focus Styles ──────────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid #227FA1;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─── RTL / Safe Area ───────────────────────────────────────────── */
+[dir="rtl"] { text-align: right; }
+.safe-area-pb { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   CHALKBOARD STYLES — Learning Page
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Board background with subtle noise texture */
+.chalkboard {
+  background-color: var(--color-chalk-board);
+  background-image:
+    /* Subtle noise grain */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E"),
+    /* Subtle vertical streaks — like real chalk residue */
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255,255,255,0.008) 20%,
+      transparent 40%,
+      rgba(255,255,255,0.005) 60%,
+      transparent 80%,
+      rgba(255,255,255,0.008) 100%
+    );
+  position: relative;
+}
+
+/* Wooden tray at the bottom (decorative) */
+.chalkboard-tray {
+  background: linear-gradient(
+    180deg,
+    var(--color-chalk-tray) 0%,
+    #0F1A14 100%
+  );
+  border-top: 2px solid rgba(255,255,255,0.06);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Chalk dust line divider */
+.chalk-line {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(232, 228, 212, 0.15) 15%,
+    rgba(232, 228, 212, 0.25) 40%,
+    rgba(232, 228, 212, 0.20) 60%,
+    rgba(232, 228, 212, 0.10) 85%,
+    transparent 100%
+  );
+  margin: 1.5rem 0;
+}
+
+/* Dashed chalk line (horizontal rule) */
+.chalk-line-dashed {
+  height: 0;
+  border: none;
+  border-top: 2px dashed rgba(232, 228, 212, 0.15);
+  margin: 2rem 0;
+}
+
+/* Chalk text glow (subtle bloom on headings) */
+.chalk-glow {
+  text-shadow: 0 0 8px rgba(232, 228, 212, 0.15);
+}
+
+/* ─── Chalkboard Rich Text Content ──────────────────────────────── */
+.chalk-content h1 {
+  font-family: var(--font-chalk);
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--color-chalk-white);
+  text-shadow: 0 0 10px rgba(232, 228, 212, 0.12);
+  margin-bottom: 1.25rem;
+  line-height: 1.2;
+}
+.chalk-content h2 {
+  font-family: var(--font-chalk);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-chalk-yellow);
+  text-shadow: 0 0 8px rgba(242, 209, 107, 0.1);
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+.chalk-content h3 {
+  font-family: var(--font-chalk);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--color-chalk-blue);
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+.chalk-content p {
+  font-family: var(--font-chalk-body);
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: var(--color-chalk-white-dim);
+  margin-bottom: 1.5rem;
+  font-weight: 300;
+}
+.chalk-content strong {
+  color: var(--color-chalk-white);
+  font-weight: 700;
+}
+.chalk-content a {
+  color: var(--color-chalk-blue);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.chalk-content ul, .chalk-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.chalk-content li {
+  font-family: var(--font-chalk-body);
+  color: var(--color-chalk-white-dim);
+  margin-bottom: 0.6rem;
+  line-height: 1.8;
+  font-weight: 300;
+}
+.chalk-content li::marker {
+  color: var(--color-chalk-yellow);
+}
+.chalk-content code {
+  background: rgba(255,255,255,0.08);
+  color: var(--color-chalk-green);
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-family: 'Fira Code', monospace, monospace;
+}
+.chalk-content pre {
+  background: rgba(0,0,0,0.35);
+  color: #D4D4D8;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  border: 1px solid var(--color-chalk-border);
+}
+
+/* Key concept callout box on the board */
+.chalk-content blockquote,
+.chalk-content .key-concept {
+  border-left: 3px solid var(--color-chalk-yellow);
+  background: rgba(242, 209, 107, 0.06);
+  padding: 1rem 1.25rem;
+  border-radius: 0 0.75rem 0.75rem 0;
+  margin: 1.5rem 0;
+}
+.chalk-content blockquote p,
+.chalk-content .key-concept p {
+  color: var(--color-chalk-white-dim);
+  margin-bottom: 0;
+}
+
+/* ─── Flashcard Flip ────────────────────────────────────────────── */
+.flashcard-perspective { perspective: 1200px; }
+.flashcard-flip {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.flashcard-flip.flipped { transform: rotateY(180deg); }
+.flashcard-face { backface-visibility: hidden; }
+.flashcard-back { transform: rotateY(180deg); }
+
+/* ─── Rich Text Content (non-chalkboard pages) ──────────────────── */
+.rich-text-content h1 {
+  font-size: 2rem; font-weight: 800; color: #0F172A;
+  margin-bottom: 1rem; line-height: 1.2;
+}
+.rich-text-content h2 {
+  font-size: 1.5rem; font-weight: 700; color: #0F172A;
+  margin-bottom: 0.75rem; margin-top: 2rem; line-height: 1.3;
+}
+.rich-text-content p {
+  font-size: 1.125rem; line-height: 1.75; color: #475569; margin-bottom: 1.25rem;
+}
+.rich-text-content a { color: #227FA1; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.rich-text-content ul, .rich-text-content ol { padding-left: 1.5rem; margin-bottom: 1.25rem; }
+.rich-text-content li { margin-bottom: 0.5rem; color: #475569; line-height: 1.7; }
+.rich-text-content code { background: #F1F5F9; color: #0F172A; padding: 0.15rem 0.4rem; border-radius: 0.375rem; font-size: 0.875rem; }
+.rich-text-content pre { background: #0F172A; color: #E2E8F0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin: 1.5rem 0; font-size: 0.875rem; line-height: 1.6; }
+
+/* ─── Reduced Motion ────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family:  Helvetica, sans-serif;
-}
-

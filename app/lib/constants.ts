@@ -1,5 +1,11 @@
 import { CourseCategory, Language, LevelThreshold } from "../types/user";
 
+export const COLORS = {
+  brand: { DEFAULT: '#227FA1', 50: '#EBF5F9', 500: '#227FA1', 600: '#1B6681', 700: '#154C61' },
+  text: { primary: '#0F172A', secondary: '#475569', tertiary: '#94A3B8', inverse: '#FFFFFF' },
+  gamification: { xp: '#8B5CF6', streak: '#F97316', achievement: '#EAB308', level: '#227FA1' },
+} as const;
+
 export const LEVELS: LevelThreshold[] = [
   { level: 1, rank: 'Blockchain Newbie', xpRequired: 0 },
   { level: 2, rank: 'Blockchain Rookie', xpRequired: 100 },
@@ -33,7 +39,9 @@ export const SUPPORTED_LANGUAGES: Language[] = [
   { code: 'pt', name: 'Portuguese', nativeName: 'Português', direction: 'ltr' },
 ];
 
-export const COURSE_CATEGORIES: { key: CourseCategory; label: string }[] = [
+export const COURSE_CATEGORIES: {
+  labelKey: any; key: CourseCategory; label: string 
+}[] = [
   { key: 'fundamentals', label: 'Fundamentals' },
   { key: 'smart-contracts', label: 'Smart Contracts' },
   { key: 'defi', label: 'DeFi' },
@@ -43,3 +51,9 @@ export const COURSE_CATEGORIES: { key: CourseCategory; label: string }[] = [
 ];
 
 export const PLAYBACK_SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
+
+export const LAYOUT = {
+  sidebarWidth: 256,
+  mobileNavHeight: 72,
+  headerHeight: 80,
+} as const;
