@@ -140,6 +140,7 @@ model User {
   tokenLedger     TokenLedger[]
   certificates    Certificate[]
   auditLogs       AuditLog[]
+  createdCourses Course[]
 
   @@index([email])
   @@index([role])
@@ -221,6 +222,7 @@ model CreatorProfile {
 model Course {
   id              String         @id @default(cuid())
   creatorId       String         @map("creator_id")
+  creator         User           @relation(fields: [creatorId], references: [id])
   slug            String         @unique
   defaultLanguage Language       @default(EN) @map("default_language")
   level           CourseLevel    @default(BEGINNER)

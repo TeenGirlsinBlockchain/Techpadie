@@ -11,6 +11,7 @@ import { BadRequestError } from '@/app/lib/api-error';
  * POST /api/admin/courses/[courseId]/reject
  * Body: { reason: "..." }
  */
+
 export const POST = withRole('ADMIN')(async (request, { user, params }) => {
   try {
     const body = await request.json();
