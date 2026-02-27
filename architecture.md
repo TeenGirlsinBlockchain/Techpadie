@@ -308,3 +308,4 @@ No external auth providers. Email + password + OTP verification. Sessions stored
 
 ### AI Content: Versioned and Cached
 Generated content (quiz, flashcards, summary) is stored with `contentHash` — a SHA-256 of the lesson text. Regeneration only happens when the hash changes or an admin/creator explicitly triggers it. This prevents unnecessary API calls and ensures consistency.
+
