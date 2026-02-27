@@ -1,6 +1,5 @@
-// FILE: src/server/repositories/enrollment.repo.ts — Enrollment Data Access
 
-import { db } from '@/lib/db';
+import { db } from '@/app/lib/db';
 import type { Language } from '@prisma/client';
 
 export const enrollmentRepo = {
