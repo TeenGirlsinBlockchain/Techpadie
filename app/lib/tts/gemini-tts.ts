@@ -6,7 +6,7 @@ import type { Language } from '@prisma/client';
 
 const GEMINI_API_KEY = process.env.GOOGLE_GEMINI_API_KEY;
 const GEMINI_TTS_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
-const AUDIO_STORAGE_PATH = process.env.AUDIO_STORAGE_PATH || './audio-files';
+const AUDIO_STORAGE_PATH = process.env.AUDIO_STORAGE_PATH || '../app/audio-files';
 
 // Language → voice configuration
 const VOICE_CONFIG: Record<string, { languageCode: string; name: string }> = {
