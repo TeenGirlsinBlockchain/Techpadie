@@ -97,7 +97,7 @@ export default function TechpadieLanding() {
                    +12.5% Today
                  </div>
                </div>
-               <div className="h-40 w-full bg-gradient-to-tr from-[#227FA1]/20 to-purple-500/10 rounded-2xl border border-white/5" />
+               <div className="h-40 w-full bg-linear-to-tr from-[#227FA1]/20 to-purple-500/10 rounded-2xl border border-white/5" />
              </motion.div>
           </div>
         </section>
@@ -107,7 +107,7 @@ export default function TechpadieLanding() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            className="max-w-4xl mx-auto px-6 bg-gradient-to-b from-[#227FA1] to-[#1a637e] py-20 rounded-[3rem] text-white shadow-2xl relative overflow-hidden"
+            className="max-w-4xl mx-auto px-6 bg-linear-to-b from-[#227FA1] to-[#1a637e] py-20 rounded-[3rem] text-white shadow-2xl relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 p-8 opacity-20">
               <AdaMascot variant="celebrate" className="w-40 h-40" />

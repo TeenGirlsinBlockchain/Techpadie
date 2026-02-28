@@ -1,8 +1,10 @@
-
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../app/generated/prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcrypt';
+import 'dotenv/config';
 
-const db = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const db = new PrismaClient({ adapter });
 
 async function main() {
   console.log('🌱 Seeding database...\n');
@@ -120,7 +122,7 @@ Key Concepts:
 Why Blockchain Matters:
 Blockchain enables trust without intermediaries. It has applications beyond cryptocurrency, including supply chain management, digital identity, voting systems, and decentralized finance (DeFi).`;
 
-  const { hashContent } = await import('../src/lib/crypto');
+  const { hashContent } = await import('../app/lib/crypto');
   const contentHash = hashContent(lessonContent);
 
   await db.lesson.create({

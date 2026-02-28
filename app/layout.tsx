@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Lexend, Caveat, Kalam } from "next/font/google";
 import { Toaster } from 'react-hot-toast';
+import { AuthProvider } from "@/app/hooks/useAuth";
 
 import "@/app/_styles/globals.css";
 
@@ -41,7 +42,9 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${lexend.variable} ${caveat.variable} ${kalam.variable} antialiased bg-white text-[#0F172A]`}
       >
-        {children}
+       <AuthProvider>
+          {children}
+        </AuthProvider>
         <Toaster position="top-right" />
       </body>
     </html>
