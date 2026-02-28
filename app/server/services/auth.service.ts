@@ -1,3 +1,4 @@
+
 import { userRepo } from '@/app/server/repositories/user.repo';
 import { otpRepo } from '@/app/server/repositories/session.repo';
 import { auditRepo } from '@/app/server/repositories/audit.repo';
@@ -26,7 +27,6 @@ export async function signup(
   input: SignupInput,
   meta: { ipAddress: string; userAgent: string }
 ) {
-  // Check if email already exists
   const existing = await userRepo.findByEmail(input.email);
   if (existing) {
     throw new ConflictError('An account with this email already exists');
@@ -40,7 +40,6 @@ export async function signup(
     displayName: input.displayName,
   });
 
-  // Audit
   await auditRepo.log({
     userId: user.id,
     action: 'USER_SIGNUP',
@@ -49,7 +48,6 @@ export async function signup(
     metadata: { email: input.email },
   });
 
-  // Send welcome email (fire-and-forget, don't block signup)
   sendWelcomeEmail(input.email, input.displayName).catch((err) => {
     logger.error('Welcome email failed', err instanceof Error ? err : new Error(String(err)));
   });
@@ -57,24 +55,24 @@ export async function signup(
   return user;
 }
 
-// ─── Login Step 1 (Email + Password → Send OTP) ────────────────
+// ─── Login Step 1 (Email + Password → OTP or Direct Session) ───
 
 /**
- * Validates credentials. If valid, generates and sends OTP.
- * Returns a generic response to prevent user enumeration.
+ * Validates credentials.
+ * - ADMIN: Creates session immediately (no OTP needed)
+ * - STUDENT/CREATOR: Generates and sends OTP
  *
- * ANTI-ENUMERATION: Whether the email exists or not, the response
- * is the same: "If the account exists, an OTP has been sent."
+ * ANTI-ENUMERATION: For non-admin flow, response is always the same
+ * whether the email exists or not.
  */
 export async function loginStep1(
   input: LoginInput,
   meta: { ipAddress: string; userAgent: string }
-): Promise<{ otpRequired: true }> {
+): Promise<{ otpRequired: boolean; user?: unknown }> {
   const user = await userRepo.findByEmail(input.email);
 
   if (!user || !user.isActive) {
     // Anti-enumeration: don't reveal that user doesn't exist
-    // Add a small delay to match the timing of a real password check
     await hashPassword('dummy-to-match-timing');
 
     await auditRepo.log({
@@ -84,7 +82,6 @@ export async function loginStep1(
       metadata: { email: input.email, reason: 'user_not_found' },
     });
 
-    // Return same shape as success — caller can't tell the difference
     return { otpRequired: true };
   }
 
@@ -99,11 +96,32 @@ export async function loginStep1(
       metadata: { reason: 'invalid_password' },
     });
 
-    // Same anti-enumeration response
+    // For admins with wrong password, still return otpRequired
+    // to avoid revealing that the account is an admin
     return { otpRequired: true };
   }
 
-  // Password correct → Generate and send OTP
+  // ─── ADMIN: Skip OTP, create session directly ───
+  if (user.role === 'ADMIN') {
+    if (!user.emailVerified) {
+      await userRepo.setEmailVerified(user.id);
+    }
+
+    await createSession(user.id, meta);
+
+    await auditRepo.log({
+      userId: user.id,
+      action: 'SESSION_CREATED',
+      ipAddress: meta.ipAddress,
+      userAgent: meta.userAgent,
+      metadata: { method: 'password_only' },
+    });
+
+    const safeUser = await userRepo.findByIdSafe(user.id);
+    return { otpRequired: false, user: safeUser };
+  }
+
+  // ─── STUDENT/CREATOR: Send OTP ───
   const { code, hash } = await generateOTP();
   const expiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000);
 
@@ -122,7 +140,6 @@ export async function loginStep1(
     metadata: { purpose: 'login' },
   });
 
-  // Send OTP email
   const emailResult = await sendOTPEmail(input.email, code, user.displayName);
   if (!emailResult.success) {
     logger.error(
@@ -130,7 +147,6 @@ export async function loginStep1(
       new Error(emailResult.error || 'unknown'),
       { userId: user.id }
     );
-    // Still return otpRequired — user can retry
   }
 
   return { otpRequired: true };
@@ -148,7 +164,6 @@ export async function loginStep2(
     throw new UnauthorizedError('Invalid email or verification code');
   }
 
-  // Find latest valid OTP
   const otp = await otpRepo.findLatestValid(user.id, 'login');
 
   if (!otp) {
@@ -162,7 +177,6 @@ export async function loginStep2(
     throw new UnauthorizedError('Invalid email or verification code');
   }
 
-  // Check attempt limit
   if (otp.attempts >= OTP_MAX_ATTEMPTS) {
     await auditRepo.log({
       userId: user.id,
@@ -176,10 +190,8 @@ export async function loginStep2(
     );
   }
 
-  // Increment attempts BEFORE verifying (prevents race conditions)
   await otpRepo.incrementAttempts(otp.id);
 
-  // Verify code
   const isValid = await verifyOTP(input.code, otp.codeHash);
 
   if (!isValid) {
@@ -193,15 +205,12 @@ export async function loginStep2(
     throw new UnauthorizedError('Invalid email or verification code');
   }
 
-  // OTP valid → mark used + create session
   await otpRepo.markUsed(otp.id);
 
-  // Mark email as verified (first successful OTP = email confirmed)
   if (!user.emailVerified) {
     await userRepo.setEmailVerified(user.id);
   }
 
-  // Create session (sets HttpOnly cookie)
   await createSession(user.id, meta);
 
   await auditRepo.log({
@@ -218,7 +227,6 @@ export async function loginStep2(
     userAgent: meta.userAgent,
   });
 
-  // Return safe user data
   const safeUser = await userRepo.findByIdSafe(user.id);
   return { user: safeUser };
 }
@@ -241,9 +249,6 @@ export async function logout(
 
 // ─── Password Reset Request ─────────────────────────────────────
 
-/**
- * Anti-enumeration: always returns the same response.
- */
 export async function requestPasswordReset(
   email: string,
   meta: { ipAddress: string; userAgent: string }
@@ -251,7 +256,6 @@ export async function requestPasswordReset(
   const user = await userRepo.findByEmail(email);
 
   if (!user || !user.isActive) {
-    // Anti-enumeration: don't reveal user existence
     return;
   }
 
@@ -305,12 +309,10 @@ export async function confirmPasswordReset(
     throw new UnauthorizedError('Invalid email or verification code');
   }
 
-  // Update password
   const newHash = await hashPassword(input.newPassword);
   await userRepo.updatePassword(user.id, newHash);
   await otpRepo.markUsed(otp.id);
 
-  // Destroy all existing sessions (force re-login)
   const { sessionRepo } = await import('@/server/repositories/session.repo');
   await sessionRepo.deleteAllForUser(user.id);
 
