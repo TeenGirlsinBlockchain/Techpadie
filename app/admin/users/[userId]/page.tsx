@@ -334,16 +334,8 @@ export default function AdminUserDetailPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 flex-shrink-0">
-                    {e.isCompleted ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600">
-                        <CheckCircleIcon className="w-3.5 h-3.5" /> Completed
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-600">
-                        <ClockIcon className="w-3.5 h-3.5" /> In Progress
-                      </span>
-                    )}
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="text-[11px] font-bold text-[#227FA1]">Enrolled</span>
                     <span className="text-[11px] text-gray-400">{formatDate(e.createdAt)}</span>
                   </div>
                 </div>

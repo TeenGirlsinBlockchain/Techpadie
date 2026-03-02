@@ -40,8 +40,6 @@ export const GET = withRole('ADMIN')(async (request, { user: _admin, params }) =
           select: {
             id: true,
             language: true,
-            isCompleted: true,
-            completedAt: true,
             createdAt: true,
             course: {
               select: {
