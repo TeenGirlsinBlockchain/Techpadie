@@ -17,6 +17,7 @@ import {
 
 const NAV_LINKS = [
   { name: "Overview", href: "/admin", icon: LayoutDashboardIcon },
+   { name: "Users", href: "/admin/users", icon: UsersIcon }, 
   { name: "Creator Approvals", href: "/admin/creators", icon: UsersIcon },
   { name: "Course Moderation", href: "/admin/courses", icon: BookOpenIcon },
   { name: "Job Monitor", href: "/admin/jobs", icon: ShieldCheckIcon },
