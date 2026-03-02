@@ -48,7 +48,7 @@ export async function signup(
     metadata: { email: input.email },
   });
 
-  sendWelcomeEmail(input.email, input.displayName).catch((err) => {
+  sendWelcomeEmail(input.email, input.displayName).catch((err: any) => {
     logger.error('Welcome email failed', err instanceof Error ? err : new Error(String(err)));
   });
 
@@ -313,7 +313,7 @@ export async function confirmPasswordReset(
   await userRepo.updatePassword(user.id, newHash);
   await otpRepo.markUsed(otp.id);
 
-  const { sessionRepo } = await import('@/server/repositories/session.repo');
+  const { sessionRepo } = await import('@/app/server/repositories/session.repo');
   await sessionRepo.deleteAllForUser(user.id);
 
   await auditRepo.log({
