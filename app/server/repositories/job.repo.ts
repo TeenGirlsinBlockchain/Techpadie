@@ -19,7 +19,7 @@ export const jobRepo = {
     return db.job.create({
       data: {
         type,
-        payload,
+        payload: payload as any,
         maxAttempts: options?.maxAttempts || 3,
         scheduledAt: options?.scheduledAt || new Date(),
       },

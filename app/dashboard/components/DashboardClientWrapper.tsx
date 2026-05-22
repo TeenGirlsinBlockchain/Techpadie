@@ -94,15 +94,16 @@ export default function DashboardClientWrapper({ statData, courseData }: DataPro
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {courseData.map((course) => (
                             <CourseCard 
-                                key={course.id}
+                                variant="enrolled"
+                                courseId={String(course.id)}
                                 courseTitle={course.courseTitle}
-                                level="Beginner" // These will be dynamic later
+                                level="beginner" 
                                 imageUrl="https://images.unsplash.com/photo-1516116216624-53e697fedbea?q=80&w=1000"
-                                instructorName="Chris Walter"
-                                instructorAvatar="https://i.pravatar.cc/150?u=chris"
+                                author={{ id: "chris", name: "Chris Walter", avatar: "https://i.pravatar.cc/150?u=chris" }}
                                 studentCount={120}
                                 rating={5.0}
-                                isEnrolled={true}
+                                duration="4h"
+                                progressPercentage={50}
                                 onAction={() => handleContinueLearning(course.id)} 
                             />
                         ))}

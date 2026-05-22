@@ -18,16 +18,18 @@ export interface QuizQuestion {
   question: string;
   options: QuizOption[];
   explanation: string;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty?: 'easy' | 'medium' | 'hard';
+  xpReward?: number;
 }
 
 export interface LessonGeneratedContent {
   lessonId: string;
-  language: string;
+  language?: string;
+  locale?: string;
   flashcards: Flashcard[];
   quiz: QuizQuestion[];
   generatedAt: string;
-  version: number;
+  version?: number;
 }
 
 export type LessonTab = 'read' | 'listen' | 'flashcards' | 'quiz';

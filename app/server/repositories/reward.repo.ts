@@ -1,5 +1,6 @@
 
 import { db } from '@/app/lib/db';
+import type { TokenLedgerStatus } from '@prisma/client';
 
 export const rewardRepo = {
   async findRewardConfig(courseId: string) {
@@ -38,7 +39,7 @@ export const rewardRepo = {
         tokenSymbol: data.tokenSymbol,
         chainNetwork: data.chainNetwork,
         walletAddress: data.walletAddress || null,
-        status: 'pending',
+        status: 'PENDING',
       },
     });
 
@@ -47,7 +48,7 @@ export const rewardRepo = {
 
   async updateLedgerStatus(
     id: string,
-    status: string,
+    status: TokenLedgerStatus,
     extra?: { txHash?: string; errorMsg?: string; completedAt?: Date }
   ) {
     return db.tokenLedger.update({

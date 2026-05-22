@@ -40,7 +40,7 @@ try {
   });
 } catch (error) {
   if (error instanceof z.ZodError) {
-    const formatError = error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join('\n');
+    const formatError = error.issues.map(e => `${e.path.join('.')}: ${e.message}`).join('\n');
     console.error('❌ Invalid environment variables:\n', formatError);
     if (process.env.NODE_ENV === 'production') {
       throw new Error(`Invalid environment variables:\n${formatError}`);

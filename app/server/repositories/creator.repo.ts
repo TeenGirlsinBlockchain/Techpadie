@@ -63,7 +63,7 @@ export const creatorRepo = {
         bio: data.bio || null,
         expertise: data.expertise || [],
         website: data.website || null,
-        socialLinks: data.socialLinks || null,
+        socialLinks: data.socialLinks ? (data.socialLinks as any) : undefined,
       },
       include: {
         user: {

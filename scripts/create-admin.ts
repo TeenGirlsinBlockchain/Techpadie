@@ -2,10 +2,13 @@
 // Usage: npx tsx scripts/create-admin.ts <email> <displayName> <password>
 // Example: npx tsx scripts/create-admin.ts admin@techpadie.com "Super Admin" MySecure123!
 
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../app/generated/prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcrypt';
+import 'dotenv/config';
 
-const db = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const db = new PrismaClient({ adapter });
 
 async function main() {
   const [, , email, displayName, password] = process.argv;

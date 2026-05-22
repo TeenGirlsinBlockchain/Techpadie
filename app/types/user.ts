@@ -154,64 +154,6 @@ export interface ActivityItem {
   metadata?: Record<string, unknown>;
 }
 
-// types/i18n.ts
-export type LanguageCode = 'en' | 'fr' | 'sw' | 'ar' | 'ha' | 'pt';
-
-export interface Language {
-  code: LanguageCode;
-  name: string;
-  nativeName: string;
-  direction: 'ltr' | 'rtl';        // Arabic is RTL
-}
-
-export interface TranslationKeys {
-  // Navigation
-  'nav.dashboard': string;
-  'nav.explore': string;
-  'nav.myCourses': string;
-  'nav.achievements': string;
-  'nav.settings': string;
-  // Dashboard
-  'dashboard.welcome': string;
-  'dashboard.welcomeBack': string;
-  'dashboard.continueLearning': string;
-  'dashboard.coursesForYou': string;
-  'dashboard.recentActivity': string;
-  'dashboard.dailyTip': string;
-  // Stats
-  'stats.currentStreak': string;
-  'stats.totalXP': string;
-  'stats.coursesCompleted': string;
-  'stats.currentLevel': string;
-  'stats.weeklyTime': string;
-  // Course
-  'course.enroll': string;
-  'course.resume': string;
-  'course.completed': string;
-  'course.lessons': string;
-  'course.hours': string;
-  'course.students': string;
-  // Audio
-  'audio.play': string;
-  'audio.pause': string;
-  'audio.speed': string;
-  'audio.listenToLesson': string;
-  // General
-  'general.viewAll': string;
-  'general.search': string;
-  'general.noResults': string;
-  'general.loading': string;
-}
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
-  preferredLanguage: LanguageCode;
-  role: 'student' | 'instructor' | 'admin';
-  createdAt: string;
-}
 
 export interface UserPreferences {
   preferredLanguage: LanguageCode;

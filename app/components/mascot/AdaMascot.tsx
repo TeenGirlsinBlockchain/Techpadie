@@ -3,7 +3,12 @@
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
-export default function AdaMascot({ className = "" }) {
+interface AdaMascotProps {
+  className?: string;
+  variant?: 'default' | 'point' | 'celebrate';
+}
+
+export default function AdaMascot({ className = "", variant = "default" }: AdaMascotProps) {
   const [isHovered, setIsHovered] = useState(false);
   const mascotRef = useRef<HTMLDivElement>(null);
 

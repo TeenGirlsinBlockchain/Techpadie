@@ -44,7 +44,12 @@ export const GET = withRole('ADMIN')(async (request, { user: _admin, params }) =
             course: {
               select: {
                 id: true,
-                title: true,
+                translations: {
+                  select: {
+                    title: true,
+                    language: true,
+                  },
+                },
                 slug: true,
                 category: true,
                 level: true,
@@ -63,7 +68,12 @@ export const GET = withRole('ADMIN')(async (request, { user: _admin, params }) =
             course: {
               select: {
                 id: true,
-                title: true,
+                translations: {
+                  select: {
+                    title: true,
+                    language: true,
+                  },
+                },
                 slug: true,
               },
             },
@@ -71,21 +81,26 @@ export const GET = withRole('ADMIN')(async (request, { user: _admin, params }) =
           orderBy: { issuedAt: 'desc' },
           take: 50,
         },
-        rewardLedger: {
+        tokenLedger: {
           select: {
             id: true,
-            tokenAmount: true,
+            amount: true,
             status: true,
             txHash: true,
-            createdAt: true,
+            claimedAt: true,
             course: {
               select: {
                 id: true,
-                title: true,
+                translations: {
+                  select: {
+                    title: true,
+                    language: true,
+                  },
+                },
               },
             },
           },
-          orderBy: { createdAt: 'desc' },
+          orderBy: { claimedAt: 'desc' },
           take: 20,
         },
         sessions: {
@@ -103,7 +118,7 @@ export const GET = withRole('ADMIN')(async (request, { user: _admin, params }) =
           select: {
             enrollments: true,
             certificates: true,
-            rewardLedger: true,
+            tokenLedger: true,
             sessions: true,
           },
         },

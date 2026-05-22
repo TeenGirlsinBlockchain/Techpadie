@@ -40,7 +40,7 @@ export function errorResponse(error: unknown) {
 
   // Zod validation errors
   if (error instanceof ZodError) {
-    const details = error.errors.map((e) => ({
+    const details = error.issues.map((e) => ({
       field: e.path.join('.'),
       message: e.message,
     }));

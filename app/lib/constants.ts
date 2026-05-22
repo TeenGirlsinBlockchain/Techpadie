@@ -1,4 +1,5 @@
-import { CourseCategory, Language, LevelThreshold } from "../types/user";
+import { CourseCategory, LevelThreshold } from "../types/user";
+import { Language } from "../types/i18n";
 
 export const COLORS = {
   brand: { DEFAULT: '#227FA1', 50: '#EBF5F9', 500: '#227FA1', 600: '#1B6681', 700: '#154C61' },
@@ -40,7 +41,7 @@ export const SUPPORTED_LANGUAGES: Language[] = [
 ];
 
 export const COURSE_CATEGORIES: {
-  labelKey: any; key: CourseCategory; label: string 
+  labelKey?: any; key: CourseCategory; label: string 
 }[] = [
   { key: 'fundamentals', label: 'Fundamentals' },
   { key: 'smart-contracts', label: 'Smart Contracts' },

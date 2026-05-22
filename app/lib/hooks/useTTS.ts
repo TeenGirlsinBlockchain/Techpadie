@@ -31,7 +31,7 @@ export function useTTS() {
           (v) => v.lang.startsWith('en') && v.localService
         ) || voices.find((v) => v.lang.startsWith('en')) || voices[0];
 
-        setState((s: { voice: any; }) => ({
+        setState((s) => ({
           ...s,
           availableVoices: voices,
           voice: s.voice || englishVoice,

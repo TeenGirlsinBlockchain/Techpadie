@@ -21,7 +21,7 @@ export const auditRepo = {
         data: {
           userId: entry.userId || null,
           action: entry.action,
-          metadata: entry.metadata || null,
+          metadata: entry.metadata ? (entry.metadata as any) : undefined,
           ipAddress: entry.ipAddress || null,
           userAgent: entry.userAgent || null,
         },

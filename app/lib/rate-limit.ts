@@ -2,7 +2,7 @@
 import { db } from './db';
 import { RateLimitError } from './api-error';
 
-interface RateLimitConfig {
+export interface RateLimitConfig {
   /** Unique key prefix, e.g. "login", "otp", "api" */
   prefix: string;
   /** Max hits allowed in the window */

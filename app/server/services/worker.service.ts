@@ -12,7 +12,7 @@ import { cleanExpiredRateLimits } from '@/app/lib/rate-limit';
 import { cleanExpiredSessions } from '@/app/lib/auth';
 import { otpRepo } from '@/app/server/repositories/session.repo';
 import { logger } from '@/app/lib/logger';
-import type { JobType, Language } from '@prisma/client';
+import type { JobType, Language, TokenLedgerStatus } from '@prisma/client';
 
 const WORKER_ID =
   process.env.JOB_WORKER_ID || `worker-${Date.now()}`;
@@ -152,18 +152,18 @@ async function processTokenTransfer(payload: Record<string, unknown>) {
   };
 
   if (!walletAddress) {
-    // No wallet → mark as pending_wallet, user can claim later
-    await rewardRepo.updateLedgerStatus(ledgerEntryId, 'pending_wallet');
+    // No wallet → mark as PENDING, user can claim later
+    await rewardRepo.updateLedgerStatus(ledgerEntryId, 'PENDING');
     logger.info('Token transfer deferred — no wallet address', { ledgerEntryId });
     return;
   }
 
   try {
-    await rewardRepo.updateLedgerStatus(ledgerEntryId, 'processing');
+    await rewardRepo.updateLedgerStatus(ledgerEntryId, 'PROCESSING');
 
     const { txHash } = await transferTokens(walletAddress, amount, tokenSymbol);
 
-    await rewardRepo.updateLedgerStatus(ledgerEntryId, 'completed', {
+    await rewardRepo.updateLedgerStatus(ledgerEntryId, 'COMPLETED', {
       txHash,
       completedAt: new Date(),
     });
@@ -171,7 +171,7 @@ async function processTokenTransfer(payload: Record<string, unknown>) {
     logger.info('Token transfer completed', { ledgerEntryId, txHash });
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
-    await rewardRepo.updateLedgerStatus(ledgerEntryId, 'failed', { errorMsg });
+    await rewardRepo.updateLedgerStatus(ledgerEntryId, 'FAILED', { errorMsg });
     throw error; // Re-throw so job gets retried
   }
 }
