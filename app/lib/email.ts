@@ -17,6 +17,23 @@ async function send(
   subject: string,
   html: string
 ): Promise<SendResult> {
+  // Development/Local Test bypass:
+  if (process.env.RESEND_API_KEY === 're_mock_key' || process.env.NODE_ENV === 'development') {
+    logger.info(`[DEV EMAIL MOCK] Simulated Email Delivery`);
+    logger.info(`  To:      ${to}`);
+    logger.info(`  Subject: ${subject}`);
+    
+    // Attempt to extract 6-digit verification code from email template
+    const otpMatch = html.match(/>(\d{6})<\/span>/) || html.match(/(\d{6})/);
+    if (otpMatch) {
+      logger.info(`  OTP Code: ${otpMatch[1]}`);
+    } else {
+      logger.info(`  HTML Content: ${html}`);
+    }
+    
+    return { success: true, messageId: `mock-msg-${Date.now()}` };
+  }
+
   try {
     const { data, error } = await resend.emails.send({
       from: FROM,
