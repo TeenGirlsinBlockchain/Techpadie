@@ -68,6 +68,8 @@ interface AudioContextValue {
   seek: (time: number) => void;
   setSpeed: (speed: number) => void;
   toggleMinimize: () => void;
+  setDuration: (duration: number) => void;
+  setCurrentTime: (time: number) => void;
 }
 
 const AudioContext = createContext<AudioContextValue | undefined>(undefined);
@@ -76,9 +78,67 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(audioReducer, INITIAL_STATE);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Synchronize state changes to the DOM audio element
+  React.useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (state.audioUrl) {
+      if (audio.src !== state.audioUrl) {
+        audio.src = state.audioUrl;
+        audio.load();
+        audio.currentTime = state.currentTime;
+      }
+    } else {
+      audio.src = '';
+    }
+
+    if (audio.playbackRate !== state.playbackSpeed) {
+      audio.playbackRate = state.playbackSpeed;
+    }
+
+    if (state.isPlaying) {
+      audio.play().catch((err) => {
+        console.error('Audio playback failed:', err);
+      });
+    } else {
+      audio.pause();
+    }
+  }, [state.audioUrl, state.isPlaying, state.playbackSpeed]);
+
+  // Synchronize DOM audio events back to the React state
+  React.useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleTimeUpdate = () => {
+      // Avoid dispatching if the component isn't playing or if difference is negligible
+      dispatch({ type: 'SET_CURRENT_TIME', payload: audio.currentTime });
+    };
+
+    const handleDurationChange = () => {
+      if (audio.duration && !isNaN(audio.duration)) {
+        dispatch({ type: 'SET_DURATION', payload: audio.duration });
+      }
+    };
+
+    const handleEnded = () => {
+      dispatch({ type: 'PAUSE' });
+    };
+
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('durationchange', handleDurationChange);
+    audio.addEventListener('ended', handleEnded);
+
+    return () => {
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('durationchange', handleDurationChange);
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, []);
+
   const play = useCallback((track: AudioTrack) => {
     dispatch({ type: 'PLAY', payload: track });
-    // Audio element will be controlled by the AudioPlayer component
   }, []);
 
   const pause = useCallback(() => {
@@ -117,9 +177,29 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     dispatch({ type: state.isMinimized ? 'MAXIMIZE' : 'MINIMIZE' });
   }, [state.isMinimized]);
 
+  const setDuration = useCallback((duration: number) => {
+    dispatch({ type: 'SET_DURATION', payload: duration });
+  }, []);
+
+  const setCurrentTime = useCallback((time: number) => {
+    dispatch({ type: 'SET_CURRENT_TIME', payload: time });
+  }, []);
+
   return (
     <AudioContext.Provider
-      value={{ state, audioRef, play, pause, resume, stop, seek, setSpeed, toggleMinimize }}
+      value={{
+        state,
+        audioRef,
+        play,
+        pause,
+        resume,
+        stop,
+        seek,
+        setSpeed,
+        toggleMinimize,
+        setDuration,
+        setCurrentTime,
+      }}
     >
       {children}
       {/* Hidden audio element — controlled by context */}

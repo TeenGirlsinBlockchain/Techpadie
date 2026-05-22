@@ -214,8 +214,8 @@ async function processCleanup() {
  * Called by the cron endpoint or a polling loop.
  * Returns true if a job was processed, false if queue is empty.
  */
-export async function processNextJob(): Promise<boolean> {
-  const jobId = await jobRepo.dequeue(WORKER_ID);
+export async function processNextJob(types?: JobType[]): Promise<boolean> {
+  const jobId = await jobRepo.dequeue(WORKER_ID, types);
 
   if (!jobId) {
     return false; // Queue empty
