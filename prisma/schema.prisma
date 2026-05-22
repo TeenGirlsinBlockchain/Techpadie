@@ -1,7 +1,6 @@
 generator client {
   provider        = "prisma-client"
   output          = "../app/generated/prisma"
-  previewFeatures = ["metrics"]
 }
 
 // Connection pooling: Set DATABASE_URL with ?connection_limit=20&pool_timeout=30

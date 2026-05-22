@@ -626,10 +626,6 @@ export type CourseUncheckedUpdateManyWithoutCreatorNestedInput = {
   deleteMany?: Prisma.CourseScalarWhereInput | Prisma.CourseScalarWhereInput[]
 }
 
-export type EnumLanguageFieldUpdateOperationsInput = {
-  set?: $Enums.Language
-}
-
 export type EnumCourseLevelFieldUpdateOperationsInput = {
   set?: $Enums.CourseLevel
 }

@@ -2023,8 +2023,10 @@ export const UserScalarFieldEnum = {
   passwordHash: 'passwordHash',
   displayName: 'displayName',
   role: 'role',
+  preferredLanguage: 'preferredLanguage',
   isActive: 'isActive',
   emailVerified: 'emailVerified',
+  lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2035,7 +2037,7 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 export const SessionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  token: 'token',
+  tokenHash: 'tokenHash',
   ipAddress: 'ipAddress',
   userAgent: 'userAgent',
   expiresAt: 'expiresAt',
@@ -2412,6 +2414,20 @@ export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
 
 
 /**
+ * Reference to a field of type 'Language'
+ */
+export type EnumLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Language'>
+    
+
+
+/**
+ * Reference to a field of type 'Language[]'
+ */
+export type ListEnumLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Language[]'>
+    
+
+
+/**
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -2485,20 +2501,6 @@ export type EnumCreatorStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'CreatorStatus[]'
  */
 export type ListEnumCreatorStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CreatorStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Language'
- */
-export type EnumLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Language'>
-    
-
-
-/**
- * Reference to a field of type 'Language[]'
- */
-export type ListEnumLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Language[]'>
     
 
 
@@ -2597,6 +2599,20 @@ export type EnumAudioStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'AudioStatus[]'
  */
 export type ListEnumAudioStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AudioStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TokenLedgerStatus'
+ */
+export type EnumTokenLedgerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TokenLedgerStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TokenLedgerStatus[]'
+ */
+export type ListEnumTokenLedgerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TokenLedgerStatus[]'>
     
 
 

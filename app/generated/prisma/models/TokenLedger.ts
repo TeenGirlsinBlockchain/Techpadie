@@ -43,7 +43,7 @@ export type TokenLedgerMinAggregateOutputType = {
   chainNetwork: string | null
   txHash: string | null
   walletAddress: string | null
-  status: string | null
+  status: $Enums.TokenLedgerStatus | null
   errorMsg: string | null
   claimedAt: Date | null
   completedAt: Date | null
@@ -58,7 +58,7 @@ export type TokenLedgerMaxAggregateOutputType = {
   chainNetwork: string | null
   txHash: string | null
   walletAddress: string | null
-  status: string | null
+  status: $Enums.TokenLedgerStatus | null
   errorMsg: string | null
   claimedAt: Date | null
   completedAt: Date | null
@@ -230,7 +230,7 @@ export type TokenLedgerGroupByOutputType = {
   chainNetwork: string
   txHash: string | null
   walletAddress: string | null
-  status: string
+  status: $Enums.TokenLedgerStatus
   errorMsg: string | null
   claimedAt: Date
   completedAt: Date | null
@@ -268,7 +268,7 @@ export type TokenLedgerWhereInput = {
   chainNetwork?: Prisma.StringFilter<"TokenLedger"> | string
   txHash?: Prisma.StringNullableFilter<"TokenLedger"> | string | null
   walletAddress?: Prisma.StringNullableFilter<"TokenLedger"> | string | null
-  status?: Prisma.StringFilter<"TokenLedger"> | string
+  status?: Prisma.EnumTokenLedgerStatusFilter<"TokenLedger"> | $Enums.TokenLedgerStatus
   errorMsg?: Prisma.StringNullableFilter<"TokenLedger"> | string | null
   claimedAt?: Prisma.DateTimeFilter<"TokenLedger"> | Date | string
   completedAt?: Prisma.DateTimeNullableFilter<"TokenLedger"> | Date | string | null
@@ -306,7 +306,7 @@ export type TokenLedgerWhereUniqueInput = Prisma.AtLeast<{
   chainNetwork?: Prisma.StringFilter<"TokenLedger"> | string
   txHash?: Prisma.StringNullableFilter<"TokenLedger"> | string | null
   walletAddress?: Prisma.StringNullableFilter<"TokenLedger"> | string | null
-  status?: Prisma.StringFilter<"TokenLedger"> | string
+  status?: Prisma.EnumTokenLedgerStatusFilter<"TokenLedger"> | $Enums.TokenLedgerStatus
   errorMsg?: Prisma.StringNullableFilter<"TokenLedger"> | string | null
   claimedAt?: Prisma.DateTimeFilter<"TokenLedger"> | Date | string
   completedAt?: Prisma.DateTimeNullableFilter<"TokenLedger"> | Date | string | null
@@ -346,7 +346,7 @@ export type TokenLedgerScalarWhereWithAggregatesInput = {
   chainNetwork?: Prisma.StringWithAggregatesFilter<"TokenLedger"> | string
   txHash?: Prisma.StringNullableWithAggregatesFilter<"TokenLedger"> | string | null
   walletAddress?: Prisma.StringNullableWithAggregatesFilter<"TokenLedger"> | string | null
-  status?: Prisma.StringWithAggregatesFilter<"TokenLedger"> | string
+  status?: Prisma.EnumTokenLedgerStatusWithAggregatesFilter<"TokenLedger"> | $Enums.TokenLedgerStatus
   errorMsg?: Prisma.StringNullableWithAggregatesFilter<"TokenLedger"> | string | null
   claimedAt?: Prisma.DateTimeWithAggregatesFilter<"TokenLedger"> | Date | string
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"TokenLedger"> | Date | string | null
@@ -359,7 +359,7 @@ export type TokenLedgerCreateInput = {
   chainNetwork: string
   txHash?: string | null
   walletAddress?: string | null
-  status?: string
+  status?: $Enums.TokenLedgerStatus
   errorMsg?: string | null
   claimedAt?: Date | string
   completedAt?: Date | string | null
@@ -376,7 +376,7 @@ export type TokenLedgerUncheckedCreateInput = {
   chainNetwork: string
   txHash?: string | null
   walletAddress?: string | null
-  status?: string
+  status?: $Enums.TokenLedgerStatus
   errorMsg?: string | null
   claimedAt?: Date | string
   completedAt?: Date | string | null
@@ -389,7 +389,7 @@ export type TokenLedgerUpdateInput = {
   chainNetwork?: Prisma.StringFieldUpdateOperationsInput | string
   txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   walletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTokenLedgerStatusFieldUpdateOperationsInput | $Enums.TokenLedgerStatus
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -406,7 +406,7 @@ export type TokenLedgerUncheckedUpdateInput = {
   chainNetwork?: Prisma.StringFieldUpdateOperationsInput | string
   txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   walletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTokenLedgerStatusFieldUpdateOperationsInput | $Enums.TokenLedgerStatus
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -421,7 +421,7 @@ export type TokenLedgerCreateManyInput = {
   chainNetwork: string
   txHash?: string | null
   walletAddress?: string | null
-  status?: string
+  status?: $Enums.TokenLedgerStatus
   errorMsg?: string | null
   claimedAt?: Date | string
   completedAt?: Date | string | null
@@ -434,7 +434,7 @@ export type TokenLedgerUpdateManyMutationInput = {
   chainNetwork?: Prisma.StringFieldUpdateOperationsInput | string
   txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   walletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTokenLedgerStatusFieldUpdateOperationsInput | $Enums.TokenLedgerStatus
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -449,7 +449,7 @@ export type TokenLedgerUncheckedUpdateManyInput = {
   chainNetwork?: Prisma.StringFieldUpdateOperationsInput | string
   txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   walletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTokenLedgerStatusFieldUpdateOperationsInput | $Enums.TokenLedgerStatus
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -607,6 +607,10 @@ export type TokenLedgerUncheckedUpdateManyWithoutCourseNestedInput = {
   deleteMany?: Prisma.TokenLedgerScalarWhereInput | Prisma.TokenLedgerScalarWhereInput[]
 }
 
+export type EnumTokenLedgerStatusFieldUpdateOperationsInput = {
+  set?: $Enums.TokenLedgerStatus
+}
+
 export type TokenLedgerCreateWithoutUserInput = {
   id?: string
   amount: number
@@ -614,7 +618,7 @@ export type TokenLedgerCreateWithoutUserInput = {
   chainNetwork: string
   txHash?: string | null
   walletAddress?: string | null
-  status?: string
+  status?: $Enums.TokenLedgerStatus
   errorMsg?: string | null
   claimedAt?: Date | string
   completedAt?: Date | string | null
@@ -629,7 +633,7 @@ export type TokenLedgerUncheckedCreateWithoutUserInput = {
   chainNetwork: string
   txHash?: string | null
   walletAddress?: string | null
-  status?: string
+  status?: $Enums.TokenLedgerStatus
   errorMsg?: string | null
   claimedAt?: Date | string
   completedAt?: Date | string | null
@@ -673,7 +677,7 @@ export type TokenLedgerScalarWhereInput = {
   chainNetwork?: Prisma.StringFilter<"TokenLedger"> | string
   txHash?: Prisma.StringNullableFilter<"TokenLedger"> | string | null
   walletAddress?: Prisma.StringNullableFilter<"TokenLedger"> | string | null
-  status?: Prisma.StringFilter<"TokenLedger"> | string
+  status?: Prisma.EnumTokenLedgerStatusFilter<"TokenLedger"> | $Enums.TokenLedgerStatus
   errorMsg?: Prisma.StringNullableFilter<"TokenLedger"> | string | null
   claimedAt?: Prisma.DateTimeFilter<"TokenLedger"> | Date | string
   completedAt?: Prisma.DateTimeNullableFilter<"TokenLedger"> | Date | string | null
@@ -686,7 +690,7 @@ export type TokenLedgerCreateWithoutCourseInput = {
   chainNetwork: string
   txHash?: string | null
   walletAddress?: string | null
-  status?: string
+  status?: $Enums.TokenLedgerStatus
   errorMsg?: string | null
   claimedAt?: Date | string
   completedAt?: Date | string | null
@@ -701,7 +705,7 @@ export type TokenLedgerUncheckedCreateWithoutCourseInput = {
   chainNetwork: string
   txHash?: string | null
   walletAddress?: string | null
-  status?: string
+  status?: $Enums.TokenLedgerStatus
   errorMsg?: string | null
   claimedAt?: Date | string
   completedAt?: Date | string | null
@@ -741,7 +745,7 @@ export type TokenLedgerCreateManyUserInput = {
   chainNetwork: string
   txHash?: string | null
   walletAddress?: string | null
-  status?: string
+  status?: $Enums.TokenLedgerStatus
   errorMsg?: string | null
   claimedAt?: Date | string
   completedAt?: Date | string | null
@@ -754,7 +758,7 @@ export type TokenLedgerUpdateWithoutUserInput = {
   chainNetwork?: Prisma.StringFieldUpdateOperationsInput | string
   txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   walletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTokenLedgerStatusFieldUpdateOperationsInput | $Enums.TokenLedgerStatus
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -769,7 +773,7 @@ export type TokenLedgerUncheckedUpdateWithoutUserInput = {
   chainNetwork?: Prisma.StringFieldUpdateOperationsInput | string
   txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   walletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTokenLedgerStatusFieldUpdateOperationsInput | $Enums.TokenLedgerStatus
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -783,7 +787,7 @@ export type TokenLedgerUncheckedUpdateManyWithoutUserInput = {
   chainNetwork?: Prisma.StringFieldUpdateOperationsInput | string
   txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   walletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTokenLedgerStatusFieldUpdateOperationsInput | $Enums.TokenLedgerStatus
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -797,7 +801,7 @@ export type TokenLedgerCreateManyCourseInput = {
   chainNetwork: string
   txHash?: string | null
   walletAddress?: string | null
-  status?: string
+  status?: $Enums.TokenLedgerStatus
   errorMsg?: string | null
   claimedAt?: Date | string
   completedAt?: Date | string | null
@@ -810,7 +814,7 @@ export type TokenLedgerUpdateWithoutCourseInput = {
   chainNetwork?: Prisma.StringFieldUpdateOperationsInput | string
   txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   walletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTokenLedgerStatusFieldUpdateOperationsInput | $Enums.TokenLedgerStatus
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -825,7 +829,7 @@ export type TokenLedgerUncheckedUpdateWithoutCourseInput = {
   chainNetwork?: Prisma.StringFieldUpdateOperationsInput | string
   txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   walletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTokenLedgerStatusFieldUpdateOperationsInput | $Enums.TokenLedgerStatus
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -839,7 +843,7 @@ export type TokenLedgerUncheckedUpdateManyWithoutCourseInput = {
   chainNetwork?: Prisma.StringFieldUpdateOperationsInput | string
   txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   walletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTokenLedgerStatusFieldUpdateOperationsInput | $Enums.TokenLedgerStatus
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -942,7 +946,7 @@ export type $TokenLedgerPayload<ExtArgs extends runtime.Types.Extensions.Interna
     chainNetwork: string
     txHash: string | null
     walletAddress: string | null
-    status: string
+    status: $Enums.TokenLedgerStatus
     errorMsg: string | null
     claimedAt: Date
     completedAt: Date | null
@@ -1379,7 +1383,7 @@ export interface TokenLedgerFieldRefs {
   readonly chainNetwork: Prisma.FieldRef<"TokenLedger", 'String'>
   readonly txHash: Prisma.FieldRef<"TokenLedger", 'String'>
   readonly walletAddress: Prisma.FieldRef<"TokenLedger", 'String'>
-  readonly status: Prisma.FieldRef<"TokenLedger", 'String'>
+  readonly status: Prisma.FieldRef<"TokenLedger", 'TokenLedgerStatus'>
   readonly errorMsg: Prisma.FieldRef<"TokenLedger", 'String'>
   readonly claimedAt: Prisma.FieldRef<"TokenLedger", 'DateTime'>
   readonly completedAt: Prisma.FieldRef<"TokenLedger", 'DateTime'>

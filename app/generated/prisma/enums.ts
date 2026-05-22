@@ -111,7 +111,8 @@ export const JobType = {
   GENERATE_SUMMARY: 'GENERATE_SUMMARY',
   GENERATE_AUDIO: 'GENERATE_AUDIO',
   TRANSFER_TOKENS: 'TRANSFER_TOKENS',
-  GENERATE_CERTIFICATE: 'GENERATE_CERTIFICATE'
+  GENERATE_CERTIFICATE: 'GENERATE_CERTIFICATE',
+  CLEANUP: 'CLEANUP'
 } as const
 
 export type JobType = (typeof JobType)[keyof typeof JobType]
@@ -126,6 +127,16 @@ export const JobStatus = {
 } as const
 
 export type JobStatus = (typeof JobStatus)[keyof typeof JobStatus]
+
+
+export const TokenLedgerStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type TokenLedgerStatus = (typeof TokenLedgerStatus)[keyof typeof TokenLedgerStatus]
 
 
 export const AuditAction = {
@@ -152,7 +163,9 @@ export const AuditAction = {
   QUIZ_ATTEMPTED: 'QUIZ_ATTEMPTED',
   REWARD_CLAIMED: 'REWARD_CLAIMED',
   TOKEN_TRANSFERRED: 'TOKEN_TRANSFERRED',
-  CERTIFICATE_ISSUED: 'CERTIFICATE_ISSUED'
+  CERTIFICATE_ISSUED: 'CERTIFICATE_ISSUED',
+  LANGUAGE_CHANGED: 'LANGUAGE_CHANGED',
+  PREFERENCES_UPDATED: 'PREFERENCES_UPDATED'
 } as const
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]
