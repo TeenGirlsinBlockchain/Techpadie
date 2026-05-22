@@ -267,9 +267,6 @@ export async function processBatch(maxJobs = 10): Promise<{
   }
 
   // Check if more jobs remain
-  const remaining = (await jobRepo.dequeue(`peek-${WORKER_ID}`)) !== null;
-  // If we peeked a job, it's now PROCESSING — re-fail it so it goes back
-  // Actually, better approach: just check queue count
   const counts = await jobRepo.countByStatus();
   const queued = counts['QUEUED'] || 0;
 

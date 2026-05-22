@@ -1,6 +1,7 @@
 
 import { Resend } from 'resend';
 import { logger } from './logger';
+import { escapeHtml } from './utils';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = process.env.EMAIL_FROM || 'Techpadie <noreply@techpadie.com>';
@@ -48,10 +49,11 @@ export async function sendOTPEmail(
   code: string,
   displayName: string
 ): Promise<SendResult> {
+  const safeName = escapeHtml(displayName);
   const html = `
     <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
       <h2 style="color: #227FA1; margin-bottom: 8px;">Techpadie</h2>
-      <p>Hi ${displayName},</p>
+      <p>Hi ${safeName},</p>
       <p>Your login verification code is:</p>
       <div style="
         background: #F1F5F9;
@@ -83,10 +85,11 @@ export async function sendWelcomeEmail(
   to: string,
   displayName: string
 ): Promise<SendResult> {
+  const safeName = escapeHtml(displayName);
   const html = `
     <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
       <h2 style="color: #227FA1; margin-bottom: 8px;">Welcome to Techpadie!</h2>
-      <p>Hi ${displayName},</p>
+      <p>Hi ${safeName},</p>
       <p>Your account has been created successfully. Start learning blockchain and digital skills today.</p>
       <a href="${process.env.APP_URL}/dashboard" style="
         display: inline-block;
@@ -112,10 +115,11 @@ export async function sendPasswordResetEmail(
   code: string,
   displayName: string
 ): Promise<SendResult> {
+  const safeName = escapeHtml(displayName);
   const html = `
     <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
       <h2 style="color: #227FA1; margin-bottom: 8px;">Techpadie</h2>
-      <p>Hi ${displayName},</p>
+      <p>Hi ${safeName},</p>
       <p>You requested a password reset. Use this code:</p>
       <div style="
         background: #F1F5F9;
@@ -148,10 +152,11 @@ export async function sendCreatorApprovedEmail(
   to: string,
   displayName: string
 ): Promise<SendResult> {
+  const safeName = escapeHtml(displayName);
   const html = `
     <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
       <h2 style="color: #227FA1;">You're Approved! 🎉</h2>
-      <p>Hi ${displayName},</p>
+      <p>Hi ${safeName},</p>
       <p>Your course creator application has been approved. You can now create and publish courses on Techpadie.</p>
       <a href="${process.env.APP_URL}/dashboard/creator" style="
         display: inline-block;
@@ -174,12 +179,14 @@ export async function sendCreatorRejectedEmail(
   displayName: string,
   reason: string
 ): Promise<SendResult> {
+  const safeName = escapeHtml(displayName);
+  const safeReason = escapeHtml(reason);
   const html = `
     <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
       <h2 style="color: #227FA1;">Application Update</h2>
-      <p>Hi ${displayName},</p>
+      <p>Hi ${safeName},</p>
       <p>Unfortunately, your course creator application was not approved at this time.</p>
-      <p><strong>Reason:</strong> ${reason}</p>
+      <p><strong>Reason:</strong> ${safeReason}</p>
       <p style="color: #64748B; font-size: 14px;">
         You can update your profile and re-apply. If you have questions, reach out to our support team.
       </p>

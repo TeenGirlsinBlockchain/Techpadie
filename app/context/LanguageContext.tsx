@@ -3,6 +3,8 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import type { LanguageCode } from '@/app/types';
 import { DEFAULT_LOCALE, getDirection, isValidLocale } from '@/app/lib/i18n/config';
+import { useAuth } from '@/app/hooks/useAuth';
+import { fetchApi } from '@/app/lib/api-client';
 
 interface LanguageContextValue {
   locale: LanguageCode;
@@ -15,9 +17,10 @@ const LanguageContext = createContext<LanguageContextValue | undefined>(undefine
 const STORAGE_KEY = 'techpadie_lang';
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
   const [locale, setLocaleState] = useState<LanguageCode>(DEFAULT_LOCALE);
 
-  // Hydrate from localStorage on mount (will be replaced by backend user prefs)
+  // Hydrate from localStorage first, then sync with authenticated user preferred language
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -25,9 +28,19 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         setLocaleState(stored);
       }
     } catch {
-      // SSR or localStorage unavailable — use default
+      // SSR or localStorage unavailable
     }
   }, []);
+
+  // Update locale when authenticated user preferred language loads
+  useEffect(() => {
+    if (user?.preferredLanguage) {
+      const userLang = user.preferredLanguage.toLowerCase();
+      if (isValidLocale(userLang)) {
+        setLocaleState(userLang as LanguageCode);
+      }
+    }
+  }, [user]);
 
   // Update document direction when locale changes
   useEffect(() => {
@@ -43,7 +56,14 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // Silently fail if localStorage unavailable
     }
-    // When backend arrives: POST /api/user/preferences { preferredLanguage: code }
+
+    // Persist to backend database
+    fetchApi('/api/user/preferences', {
+      method: 'POST',
+      body: JSON.stringify({ preferredLanguage: code }),
+    }).catch((err) => {
+      console.error('Failed to persist language preference:', err);
+    });
   }, []);
 
   return (

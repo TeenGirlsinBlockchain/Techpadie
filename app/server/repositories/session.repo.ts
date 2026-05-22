@@ -77,9 +77,9 @@ export const otpRepo = {
 // ─── Sessions ───────────────────────────────────────────────────
 
 export const sessionRepo = {
-  async findByToken(token: string) {
+  async findByTokenHash(tokenHash: string) {
     return db.session.findUnique({
-      where: { token },
+      where: { tokenHash },
       include: {
         user: {
           select: {
@@ -88,14 +88,16 @@ export const sessionRepo = {
             displayName: true,
             role: true,
             isActive: true,
+            preferredLanguage: true,
+            createdAt: true,
           },
         },
       },
     });
   },
 
-  async deleteByToken(token: string) {
-    return db.session.deleteMany({ where: { token } });
+  async deleteByTokenHash(tokenHash: string) {
+    return db.session.deleteMany({ where: { tokenHash } });
   },
 
   async deleteAllForUser(userId: string) {

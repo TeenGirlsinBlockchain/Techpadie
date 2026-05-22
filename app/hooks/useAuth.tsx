@@ -2,13 +2,15 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { fetchApi } from "@/app/lib/api-client";
-import type { UserRole, CreatorStatus } from "@prisma/client";
+import type { UserRole, CreatorStatus, Language } from "@prisma/client";
 
 interface User {
   id: string;
   email: string;
   displayName: string;
   role: UserRole;
+  preferredLanguage: Language;
+  createdAt: string;
   creatorProfile?: {
     status: CreatorStatus;
   } | null;

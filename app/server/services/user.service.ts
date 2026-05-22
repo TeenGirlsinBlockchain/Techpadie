@@ -15,6 +15,7 @@ export async function getUserProfile(userId: string) {
       email: true,
       displayName: true,
       role: true,
+      preferredLanguage: true,
       isActive: true,
       emailVerified: true,
       createdAt: true,
@@ -52,4 +53,17 @@ export async function getUserProfile(userId: string) {
       certificates: certificateCount,
     },
   };
+}
+
+export async function updateUserLanguage(userId: string, language: any) {
+  const user = await db.user.update({
+    where: { id: userId },
+    data: { preferredLanguage: language },
+    select: {
+      id: true,
+      preferredLanguage: true,
+    },
+  });
+
+  return user;
 }

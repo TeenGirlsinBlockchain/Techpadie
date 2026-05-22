@@ -1,7 +1,11 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider        = "prisma-client"
+  output          = "../app/generated/prisma"
+  previewFeatures = ["metrics"]
 }
+
+// Connection pooling: Set DATABASE_URL with ?connection_limit=20&pool_timeout=30
+// For 15k users, use PgBouncer or Prisma Accelerate in production
 datasource db {
   provider = "postgresql"
 }
@@ -82,6 +86,7 @@ enum JobType {
   GENERATE_AUDIO
   TRANSFER_TOKENS
   GENERATE_CERTIFICATE
+  CLEANUP
 }
 
 enum JobStatus {
@@ -90,6 +95,13 @@ enum JobStatus {
   COMPLETED
   FAILED
   DEAD
+}
+
+enum TokenLedgerStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
 }
 
 enum AuditAction {
@@ -117,18 +129,22 @@ enum AuditAction {
   REWARD_CLAIMED
   TOKEN_TRANSFERRED
   CERTIFICATE_ISSUED
+  LANGUAGE_CHANGED
+  PREFERENCES_UPDATED
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  passwordHash  String    @map("password_hash")
-  displayName   String    @map("display_name")
-  role          UserRole  @default(STUDENT)
-  isActive      Boolean   @default(true) @map("is_active")
-  emailVerified Boolean   @default(false) @map("email_verified")
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
+  id                String    @id @default(cuid())
+  email             String    @unique
+  passwordHash      String    @map("password_hash")
+  displayName       String    @map("display_name")
+  role              UserRole  @default(STUDENT)
+  preferredLanguage Language  @default(EN) @map("preferred_language")
+  isActive          Boolean   @default(true) @map("is_active")
+  emailVerified     Boolean   @default(false) @map("email_verified")
+  lastLoginAt       DateTime? @map("last_login_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
 
   sessions        Session[]
   otpCodes        OtpCode[]
@@ -139,17 +155,18 @@ model User {
   tokenLedger     TokenLedger[]
   certificates    Certificate[]
   auditLogs       AuditLog[]
-  createdCourses Course[]
+  createdCourses  Course[]
 
   @@index([email])
   @@index([role])
+  @@index([isActive, role])
   @@map("users")
 }
 
 model Session {
   id        String   @id @default(cuid())
   userId    String   @map("user_id")
-  token     String   @unique
+  tokenHash String   @unique @map("token_hash")
   ipAddress String?  @map("ip_address")
   userAgent String?  @map("user_agent")
   expiresAt DateTime @map("expires_at")
@@ -157,7 +174,7 @@ model Session {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([token])
+  @@index([tokenHash])
   @@index([userId])
   @@index([expiresAt])
   @@map("sessions")
@@ -445,18 +462,18 @@ model RewardConfig {
 }
 
 model TokenLedger {
-  id            String    @id @default(cuid())
-  userId        String    @map("user_id")
-  courseId       String    @map("course_id")
+  id            String            @id @default(cuid())
+  userId        String            @map("user_id")
+  courseId      String            @map("course_id")
   amount        Float
-  tokenSymbol   String    @map("token_symbol")
-  chainNetwork  String    @map("chain_network")
-  txHash        String?   @map("tx_hash")
-  walletAddress String?   @map("wallet_address")
-  status        String    @default("pending")
-  errorMsg      String?   @map("error_msg")
-  claimedAt     DateTime  @default(now()) @map("claimed_at")
-  completedAt   DateTime? @map("completed_at")
+  tokenSymbol   String            @map("token_symbol")
+  chainNetwork  String            @map("chain_network")
+  txHash        String?           @map("tx_hash")
+  walletAddress String?           @map("wallet_address")
+  status        TokenLedgerStatus @default(PENDING)
+  errorMsg      String?           @map("error_msg")
+  claimedAt     DateTime          @default(now()) @map("claimed_at")
+  completedAt   DateTime?         @map("completed_at")
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)

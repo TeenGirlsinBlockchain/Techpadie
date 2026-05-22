@@ -1,10 +1,10 @@
 
 import { cookies } from 'next/headers';
 import { db } from './db';
-import { generateSessionToken } from './crypto';
+import { generateSessionToken, hashSessionToken } from './crypto';
 import { UnauthorizedError } from './api-error';
 import { logger } from './logger';
-import type { UserRole } from '@prisma/client';
+import type { UserRole, Language } from '@prisma/client';
 
 const SESSION_COOKIE = 'tp_session';
 const SESSION_MAX_AGE_HOURS = parseInt(
@@ -19,6 +19,8 @@ export interface SessionUser {
   email: string;
   displayName: string;
   role: UserRole;
+  preferredLanguage: Language;
+  createdAt: Date;
 }
 
 // ─── Create Session ─────────────────────────────────────────────
@@ -32,6 +34,7 @@ export async function createSession(
   meta: { ipAddress?: string; userAgent?: string }
 ): Promise<string> {
   const token = generateSessionToken();
+  const tokenHash = hashSessionToken(token);
   const expiresAt = new Date(
     Date.now() + SESSION_MAX_AGE_HOURS * 60 * 60 * 1000
   );
@@ -39,7 +42,7 @@ export async function createSession(
   await db.session.create({
     data: {
       userId,
-      token,
+      tokenHash,
       ipAddress: meta.ipAddress || null,
       userAgent: meta.userAgent || null,
       expiresAt,
@@ -72,8 +75,9 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
 
     if (!token) return null;
 
+    const tokenHash = hashSessionToken(token);
     const session = await db.session.findUnique({
-      where: { token },
+      where: { tokenHash },
       include: {
         user: {
           select: {
@@ -82,6 +86,8 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
             displayName: true,
             role: true,
             isActive: true,
+            preferredLanguage: true,
+            createdAt: true,
           },
         },
       },
@@ -100,6 +106,8 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
       email: session.user.email,
       displayName: session.user.displayName,
       role: session.user.role,
+      preferredLanguage: session.user.preferredLanguage,
+      createdAt: session.user.createdAt,
     };
   } catch (err) {
     logger.error(
@@ -147,7 +155,8 @@ export async function destroySession(): Promise<void> {
   const token = cookieStore.get(SESSION_COOKIE)?.value;
 
   if (token) {
-    await db.session.deleteMany({ where: { token } }).catch(() => {});
+    const tokenHash = hashSessionToken(token);
+    await db.session.deleteMany({ where: { tokenHash } }).catch(() => {});
   }
 
   cookieStore.set(SESSION_COOKIE, '', {
