@@ -13,7 +13,7 @@ export type CourseCategory =
 export interface CourseAuthor {
   id: string;
   name: string;
-  avatar: string;
+  avatar?: string;
   title?: string;
 }
 
@@ -84,7 +84,7 @@ export interface CourseCardProps {
   variant?: CourseCardVariant;
   courseId: string;
   courseTitle: string;
-  imageUrl: string;
+  imageUrl?: string | null;
   level: CourseLevel;
   duration: string;
   rating: number;

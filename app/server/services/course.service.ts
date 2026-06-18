@@ -265,6 +265,7 @@ export async function createLesson(
     language: input.language as Language,
     sortOrder,
     duration: input.duration,
+    videoUrl: input.videoUrl,
   });
 }
 

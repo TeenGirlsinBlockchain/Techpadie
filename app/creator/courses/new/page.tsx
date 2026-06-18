@@ -46,6 +46,7 @@ export default function NewCoursePage() {
     level: "BEGINNER",
     category: "BLOCKCHAIN_BASICS",
     estimatedHours: "",
+    thumbnailUrl: "",
   });
 
   const set = (field: string, value: string) =>
@@ -64,9 +65,8 @@ export default function NewCoursePage() {
         level: form.level,
         category: form.category,
       };
-      if (form.estimatedHours) {
-        body.estimatedHours = parseFloat(form.estimatedHours);
-      }
+      if (form.estimatedHours) body.estimatedHours = parseFloat(form.estimatedHours);
+      if (form.thumbnailUrl.trim()) body.thumbnailUrl = form.thumbnailUrl.trim();
 
       const res = await fetchApi<{ data: { course: { id: string } } }>(
         "/api/creator/courses",
@@ -194,6 +194,20 @@ export default function NewCoursePage() {
               className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#227FA1] focus:border-transparent"
             />
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-1.5">
+            Thumbnail Image URL <span className="text-gray-400 font-normal">(optional)</span>
+          </label>
+          <input
+            type="url"
+            value={form.thumbnailUrl}
+            onChange={(e) => set("thumbnailUrl", e.target.value)}
+            placeholder="https://example.com/course-image.jpg"
+            className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#227FA1] focus:border-transparent"
+          />
+          <p className="text-xs text-gray-400 mt-1">Paste a direct image URL. Leave blank to use an auto-generated placeholder.</p>
         </div>
 
         <div className="flex gap-3 pt-2">

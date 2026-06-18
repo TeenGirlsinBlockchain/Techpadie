@@ -160,6 +160,7 @@ export const courseRepo = {
         where,
         include: {
           translations: true,
+          creator: { select: { id: true, displayName: true } },
           _count: { select: { enrollments: true, modules: true } },
         },
         orderBy: { publishedAt: 'desc' },
@@ -330,6 +331,7 @@ export const courseRepo = {
     language: Language;
     sortOrder: number;
     duration?: string;
+    videoUrl?: string;
   }) {
     const contentHash = hashContent(data.content);
 
@@ -338,6 +340,7 @@ export const courseRepo = {
         moduleId,
         sortOrder: data.sortOrder,
         duration: data.duration || null,
+        videoUrl: data.videoUrl || null,
         translations: {
           create: {
             language: data.language,
@@ -357,10 +360,12 @@ export const courseRepo = {
     language?: Language;
     sortOrder?: number;
     duration?: string;
+    videoUrl?: string;
   }) {
     const updateData: Record<string, unknown> = {};
     if (data.sortOrder !== undefined) updateData.sortOrder = data.sortOrder;
     if (data.duration !== undefined) updateData.duration = data.duration;
+    if (data.videoUrl !== undefined) updateData.videoUrl = data.videoUrl;
 
     const lesson = await db.lesson.update({
       where: { id: lessonId },

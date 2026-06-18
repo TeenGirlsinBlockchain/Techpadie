@@ -1,32 +1,73 @@
 
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/app/lib/i18n/useTranslation';
 import { COURSE_CATEGORIES } from '@/app/lib/constants';
-import { MOCK_COURSES } from '@/app/lib/mockData';
 import CourseCard from '../components/cards/CourseCard';
 import { MagnifyingGlassIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import type { CourseCategory } from '@/app/types';
+import { fetchApi } from '@/app/lib/api-client';
+
+type CategoryFilter = string | 'all';
+
+interface ApiCourse {
+  id: string;
+  defaultLanguage: string;
+  level: string;
+  category: string;
+  thumbnailUrl: string | null;
+  estimatedHours: number | null;
+  translations: { language: string; title: string; description: string }[];
+  creator: { id: string; displayName: string };
+  _count: { enrollments: number; modules: number };
+}
+
+function mapLevel(level: string): 'beginner' | 'intermediate' | 'advanced' {
+  const map: Record<string, 'beginner' | 'intermediate' | 'advanced'> = {
+    BEGINNER: 'beginner', INTERMEDIATE: 'intermediate', ADVANCED: 'advanced',
+  };
+  return map[level] || 'beginner';
+}
+
+function formatDuration(hours: number | null, modules: number): string {
+  if (hours) return hours === 1 ? '1 hr' : `${hours} hrs`;
+  return modules === 1 ? '1 module' : `${modules} modules`;
+}
 
 export default function ExploreCoursesPage() {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeCategory, setActiveCategory] = useState<CourseCategory | 'all'>('all');
+  const [activeCategory, setActiveCategory] = useState<CategoryFilter>('all');
+  const [courses, setCourses] = useState<ApiCourse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [total, setTotal] = useState(0);
 
-  const filteredCourses = useMemo(() => {
-    let courses = MOCK_COURSES;
-    if (activeCategory !== 'all') {
-      courses = courses.filter((c) => c.category === activeCategory);
-    }
-    if (searchTerm) {
-      const q = searchTerm.toLowerCase();
-      courses = courses.filter(
-        (c) => c.title.toLowerCase().includes(q) || c.description.toLowerCase().includes(q)
+  const loadCourses = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const params = new URLSearchParams({ page: '1', limit: '50' });
+      if (activeCategory !== 'all') {
+        const cat = COURSE_CATEGORIES.find(c => c.key === activeCategory);
+        if (cat) params.set('category', cat.apiKey);
+      }
+      if (searchTerm.trim()) params.set('q', searchTerm.trim());
+
+      const res = await fetchApi<{ data: { items: ApiCourse[]; total: number } }>(
+        `/api/courses?${params.toString()}`
       );
+      setCourses(res.data?.items || []);
+      setTotal(res.data?.total || 0);
+    } catch {
+      setCourses([]);
+    } finally {
+      setIsLoading(false);
     }
-    return courses;
   }, [activeCategory, searchTerm]);
+
+  useEffect(() => {
+    const id = setTimeout(loadCourses, searchTerm ? 400 : 0);
+    return () => clearTimeout(id);
+  }, [loadCourses, searchTerm]);
 
   return (
     <div className="space-y-6 pb-8">
@@ -43,16 +84,15 @@ export default function ExploreCoursesPage() {
             placeholder={t('explore.search')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white border border-gray-200 text-text-primary rounded-xl py-2.5 pl-10 pr-4 text-sm 
+            className="w-full bg-white border border-gray-200 text-text-primary rounded-xl py-2.5 pl-10 pr-4 text-sm
               focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all placeholder:text-text-tertiary"
           />
         </div>
       </div>
 
-      {/* Category Filters — horizontal scroll on mobile */}
+      {/* Category Filters */}
       <div className="-mx-3 px-3 sm:mx-0 sm:px-0">
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide sm:flex-wrap sm:overflow-visible sm:pb-0">
-          {/* "All" button */}
           <button
             onClick={() => setActiveCategory('all')}
             className={`
@@ -88,31 +128,41 @@ export default function ExploreCoursesPage() {
       <div className="flex items-center gap-2">
         <FunnelIcon className="h-4 w-4 text-text-tertiary" />
         <p className="text-xs font-semibold text-text-tertiary uppercase tracking-wider">
-          {filteredCourses.length} {filteredCourses.length === 1 ? 'Result' : 'Results'}
+          {isLoading ? 'Loading...' : `${total} ${total === 1 ? 'Result' : 'Results'}`}
         </p>
       </div>
 
       {/* Course Grid */}
-      {filteredCourses.length > 0 ? (
+      {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-          {filteredCourses.map((course) => (
-            <CourseCard
-              key={course.id}
-              variant="explore"
-              courseId={course.id}
-              courseTitle={course.title}
-              imageUrl={course.imageUrl}
-              level={course.level}
-              duration={course.duration}
-              rating={course.rating}
-              studentCount={course.studentCount}
-              author={course.author}
-              price={course.price}
-              currency={course.currency}
-              availableLanguages={course.availableLanguages}
-              href={`/dashboard/explore/${course.id}`}
-            />
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-72 rounded-2xl bg-gray-100 animate-pulse" />
           ))}
+        </div>
+      ) : courses.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+          {courses.map((course) => {
+            const title =
+              course.translations.find(tr => tr.language === course.defaultLanguage)?.title
+              ?? course.translations[0]?.title
+              ?? 'Untitled Course';
+
+            return (
+              <CourseCard
+                key={course.id}
+                variant="explore"
+                courseId={course.id}
+                courseTitle={title}
+                imageUrl={course.thumbnailUrl}
+                level={mapLevel(course.level)}
+                duration={formatDuration(course.estimatedHours, course._count.modules)}
+                rating={0}
+                studentCount={course._count.enrollments}
+                author={{ id: course.creator.id, name: course.creator.displayName }}
+                href={`/dashboard/explore/${course.id}`}
+              />
+            );
+          })}
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-dashed border-gray-200 text-center px-4">

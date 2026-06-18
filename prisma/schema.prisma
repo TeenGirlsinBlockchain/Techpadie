@@ -315,6 +315,7 @@ model Lesson {
   moduleId  String   @map("module_id")
   sortOrder Int      @map("sort_order")
   duration  String?
+  videoUrl  String?  @map("video_url")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

@@ -22,6 +22,28 @@ const LEVEL_VARIANT: Record<string, 'success' | 'warning' | 'error'> = {
   advanced: 'error',
 };
 
+const LEVEL_GRADIENT: Record<string, string> = {
+  beginner: 'from-emerald-400 to-teal-500',
+  intermediate: 'from-amber-400 to-orange-500',
+  advanced: 'from-rose-400 to-pink-600',
+};
+
+function AuthorAvatar({ name, avatar }: { name: string; avatar?: string }) {
+  if (avatar) {
+    return (
+      <div className="relative h-7 w-7 rounded-full overflow-hidden border border-gray-100 flex-shrink-0">
+        <Image src={avatar} alt={name} fill className="object-cover" sizes="28px" />
+      </div>
+    );
+  }
+  const initials = name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  return (
+    <div className="h-7 w-7 rounded-full bg-brand-500 flex items-center justify-center flex-shrink-0 border border-gray-100">
+      <span className="text-white text-[9px] font-black">{initials}</span>
+    </div>
+  );
+}
+
 export default function CourseCard({
   variant = 'default',
   courseId,
@@ -49,13 +71,20 @@ export default function CourseCard({
     <div className="flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden p-3 h-full group cursor-pointer">
       {/* Image */}
       <div className="relative h-36 md:h-40 w-full rounded-xl overflow-hidden mb-3">
-        <Image
-          src={imageUrl}
-          alt={courseTitle}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        />
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={courseTitle}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        ) : (
+          <div className={`w-full h-full bg-gradient-to-br ${LEVEL_GRADIENT[level] || 'from-brand-500 to-teal-500'} flex flex-col items-center justify-center gap-2`}>
+            <MusicalNoteIcon className="h-8 w-8 text-white/70" />
+            <span className="text-white/80 text-xs font-bold px-3 text-center line-clamp-2">{courseTitle}</span>
+          </div>
+        )}
 
         {/* Price overlay for sale variant */}
         {(variant === 'sale' || variant === 'explore') && price !== undefined && (
@@ -66,7 +95,7 @@ export default function CourseCard({
           </div>
         )}
 
-        {/* Audio available indicator */}
+        {/* Audio indicator */}
         <div className="absolute bottom-2.5 right-2.5 h-7 w-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm">
           <MusicalNoteIcon className="h-3.5 w-3.5 text-brand-500" />
         </div>
@@ -82,10 +111,12 @@ export default function CourseCard({
             <UserGroupIcon className="h-3.5 w-3.5" />
             {studentCount > 999 ? `${(studentCount / 1000).toFixed(1)}k` : studentCount}
           </span>
-          <span className="flex items-center gap-0.5">
-            <StarIcon className="h-3.5 w-3.5 text-amber-400" />
-            {rating.toFixed(1)}
-          </span>
+          {rating > 0 && (
+            <span className="flex items-center gap-0.5">
+              <StarIcon className="h-3.5 w-3.5 text-amber-400" />
+              {rating.toFixed(1)}
+            </span>
+          )}
         </div>
       </div>
 
@@ -106,7 +137,6 @@ export default function CourseCard({
               <ClockIcon className="h-3.5 w-3.5" />
               {duration}
             </span>
-            {/* Language badges */}
             {availableLanguages && availableLanguages.length > 0 && (
               <span className="text-[10px] font-bold text-brand-500 bg-brand-50 px-1.5 py-0.5 rounded">
                 {availableLanguages.length} lang{availableLanguages.length > 1 ? 's' : ''}
@@ -119,9 +149,7 @@ export default function CourseCard({
       {/* Footer */}
       <div className="flex items-center justify-between px-1 pt-3 border-t border-gray-50 mt-auto">
         <div className="flex items-center gap-2 min-w-0">
-          <div className="relative h-7 w-7 rounded-full overflow-hidden border border-gray-100 flex-shrink-0">
-            <Image src={author.avatar} alt={author.name} fill className="object-cover" sizes="28px" />
-          </div>
+          <AuthorAvatar name={author.name} avatar={author.avatar} />
           <span className="text-xs font-semibold text-text-secondary truncate">{author.name}</span>
         </div>
 

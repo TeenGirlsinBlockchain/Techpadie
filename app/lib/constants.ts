@@ -41,14 +41,14 @@ export const SUPPORTED_LANGUAGES: Language[] = [
 ];
 
 export const COURSE_CATEGORIES: {
-  labelKey?: any; key: CourseCategory; label: string 
+  labelKey: string; key: CourseCategory; label: string; apiKey: string;
 }[] = [
-  { key: 'fundamentals', label: 'Fundamentals' },
-  { key: 'smart-contracts', label: 'Smart Contracts' },
-  { key: 'defi', label: 'DeFi' },
-  { key: 'security', label: 'Security' },
-  { key: 'trading-markets', label: 'Trading & Markets' },
-  { key: 'development', label: 'Development' },
+  { key: 'fundamentals', label: 'Fundamentals', labelKey: 'category.fundamentals', apiKey: 'BLOCKCHAIN_BASICS' },
+  { key: 'smart-contracts', label: 'Smart Contracts', labelKey: 'category.smartContracts', apiKey: 'SMART_CONTRACTS' },
+  { key: 'defi', label: 'DeFi', labelKey: 'category.defi', apiKey: 'DEFI' },
+  { key: 'security', label: 'Security', labelKey: 'category.security', apiKey: 'SECURITY' },
+  { key: 'trading-markets', label: 'Trading & Markets', labelKey: 'category.tradingMarkets', apiKey: 'TRADING' },
+  { key: 'development', label: 'Development', labelKey: 'category.development', apiKey: 'WEB3_DEV' },
 ];
 
 export const PLAYBACK_SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];

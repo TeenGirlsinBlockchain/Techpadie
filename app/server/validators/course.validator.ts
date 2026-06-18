@@ -66,7 +66,8 @@ export const createLessonSchema = z.object({
   content: z.string().min(10, 'Content must be at least 10 characters').max(100000).trim(),
   language: languageSchema.default('EN'),
   sortOrder: z.number().int().min(0).optional(),
-  duration: z.string().max(50).optional(), // e.g. "15 min"
+  duration: z.string().max(50).optional(),
+  videoUrl: z.string().url('Video URL must be a valid URL').optional(),
 });
 
 export type CreateLessonInput = z.infer<typeof createLessonSchema>;
