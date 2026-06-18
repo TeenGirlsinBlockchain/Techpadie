@@ -16,19 +16,10 @@ export async function POST(request: NextRequest) {
 
     const result = await loginStep1(input, meta);
 
-    // Admin: session created directly, return user
-    if (!result.otpRequired && result.user) {
-      return success({
-        message: 'Login successful',
-        otpRequired: false,
-        user: result.user,
-      });
-    }
-
-    // Student/Creator: OTP sent (or anti-enumeration response)
     return success({
-      message: 'If the account exists, a verification code has been sent to your email',
-      otpRequired: true,
+      message: 'Login successful',
+      otpRequired: false,
+      user: result.user,
     });
   } catch (error) {
     return errorResponse(error);

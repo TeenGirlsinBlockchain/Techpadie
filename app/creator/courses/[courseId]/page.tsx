@@ -16,30 +16,44 @@ import Link from "next/link";
 import type { CourseStatus, Language, CourseLevel, CourseCategory } from "@prisma/client";
 
 // Mapped from your Prisma Schema
+interface LessonTranslation {
+  language: Language;
+  title: string;
+}
+
 interface Lesson {
   id: string;
-  title: string;
   duration: string | null;
   sortOrder: number;
+  translations: LessonTranslation[];
+}
+
+interface ModuleTranslation {
+  language: Language;
+  title: string;
 }
 
 interface Module {
   id: string;
-  title: string;
   sortOrder: number;
+  translations: ModuleTranslation[];
   lessons: Lesson[];
+}
+
+interface CourseTranslation {
+  language: Language;
+  title: string;
+  description: string;
 }
 
 interface CourseDetail {
   id: string;
-  title: string;
-  description: string;
   status: CourseStatus;
   defaultLanguage: Language;
   level: CourseLevel;
   category: CourseCategory;
   modules: Module[];
-  translations: any[];
+  translations: CourseTranslation[];
 }
 
 export default function CourseEditorPage() {
@@ -54,8 +68,8 @@ export default function CourseEditorPage() {
 
   const loadCourse = async () => {
     try {
-      const data = await fetchApi<{ data: CourseDetail }>(`/api/creator/courses/${courseId}`);
-      setCourse(data.data);
+      const data = await fetchApi<{ data: { course: CourseDetail } }>(`/api/creator/courses/${courseId}`);
+      setCourse(data.data.course);
     } catch (err: any) {
       setError(err.message || "Failed to load course details");
     } finally {
@@ -84,6 +98,10 @@ export default function CourseEditorPage() {
   if (isLoading) return <div className="animate-pulse h-96 bg-white rounded-2xl" />;
   if (error || !course) return <div className="p-4 bg-red-50 text-red-600 rounded-xl">{error || "Not found"}</div>;
 
+  const defaultTranslation = course.translations.find(
+    (t) => t.language === course.defaultLanguage
+  ) ?? course.translations[0];
+
   const canEdit = course.status === "DRAFT" || course.status === "REJECTED";
   const hasContent = course.modules?.some(m => m.lessons?.length > 0);
 
@@ -97,7 +115,7 @@ export default function CourseEditorPage() {
           </Link>
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <h1 className="text-2xl font-black text-gray-900">{course.title || "Untitled Course"}</h1>
+              <h1 className="text-2xl font-black text-gray-900">{defaultTranslation?.title || "Untitled Course"}</h1>
               <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${
                 course.status === "DRAFT" ? "bg-gray-100 text-gray-600" :
                 course.status === "PENDING_REVIEW" ? "bg-orange-100 text-orange-600" :
@@ -162,7 +180,7 @@ export default function CourseEditorPage() {
             course.modules.sort((a, b) => a.sortOrder - b.sortOrder).map((mod, modIdx) => (
               <div key={mod.id} className="border border-gray-200 rounded-xl overflow-hidden">
                 <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-                  <h3 className="font-bold text-gray-800">Module {modIdx + 1}: {mod.title}</h3>
+                  <h3 className="font-bold text-gray-800">Module {modIdx + 1}: {mod.translations[0]?.title ?? "Untitled Module"}</h3>
                   {canEdit && <button className="text-xs font-bold text-gray-500 hover:text-gray-900">Edit</button>}
                 </div>
                 
@@ -175,7 +193,7 @@ export default function CourseEditorPage() {
                         <div className="flex items-center gap-3">
                           <VideoIcon className="w-4 h-4 text-gray-400" />
                           <span className="text-sm font-medium text-gray-700">
-                            {modIdx + 1}.{lessIdx + 1} {lesson.title}
+                            {modIdx + 1}.{lessIdx + 1} {lesson.translations[0]?.title ?? "Untitled Lesson"}
                           </span>
                         </div>
                         {canEdit && <button className="text-xs font-bold text-gray-400 opacity-0 group-hover:opacity-100 hover:text-[#227FA1] transition-all">Edit Content</button>}

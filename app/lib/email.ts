@@ -17,8 +17,8 @@ async function send(
   subject: string,
   html: string
 ): Promise<SendResult> {
-  // Development/Local Test bypass:
-  if (process.env.RESEND_API_KEY === 're_mock_key' || process.env.NODE_ENV === 'development') {
+  // Mock bypass — only when explicitly using the mock key
+  if (process.env.RESEND_API_KEY === 're_mock_key') {
     logger.info(`[DEV EMAIL MOCK] Simulated Email Delivery`);
     logger.info(`  To:      ${to}`);
     logger.info(`  Subject: ${subject}`);

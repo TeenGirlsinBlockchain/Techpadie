@@ -8,11 +8,11 @@ import type { CourseStatus, CourseCategory, Language } from "@prisma/client";
 
 interface CreatorCourse {
   id: string;
-  title: string;
   status: CourseStatus;
   category: CourseCategory;
   defaultLanguage: Language;
   createdAt: string;
+  translations: { language: Language; title: string }[];
 }
 
 export default function CreatorCoursesPage() {
@@ -20,8 +20,8 @@ export default function CreatorCoursesPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchApi<{ data: CreatorCourse[] }>("/api/creator/courses?skip=0&take=20")
-      .then((res) => setCourses(res.data || []))
+    fetchApi<{ data: { items: CreatorCourse[] } }>("/api/creator/courses?page=1&limit=20")
+      .then((res) => setCourses(res.data?.items || []))
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
   }, []);
@@ -75,7 +75,11 @@ export default function CreatorCoursesPage() {
                 <span className="text-xs font-bold text-gray-400 uppercase">{course.defaultLanguage}</span>
               </div>
               
-              <h3 className="text-lg font-bold text-gray-900 mb-1">{course.title || "Untitled Course"}</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-1">
+                {course.translations.find(t => t.language === course.defaultLanguage)?.title
+                  ?? course.translations[0]?.title
+                  ?? "Untitled Course"}
+              </h3>
               <p className="text-sm text-gray-500 mb-6">{course.category.replace("_", " ")}</p>
               
               <div className="pt-4 border-t border-gray-100 flex justify-between items-center">

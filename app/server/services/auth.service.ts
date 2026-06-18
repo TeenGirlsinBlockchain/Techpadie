@@ -8,8 +8,9 @@ import {
   generateOTP,
   verifyOTP,
 } from '@/app/lib/crypto';
+// generateOTP + verifyOTP kept — still used by password reset flow
 import { createSession, destroySession } from '@/app/lib/auth';
-import { sendOTPEmail, sendWelcomeEmail, sendPasswordResetEmail } from '@/app/lib/email';
+import { sendWelcomeEmail, sendPasswordResetEmail } from '@/app/lib/email';
 import {
   BadRequestError,
   UnauthorizedError,
@@ -55,15 +56,14 @@ export async function signup(
   return user;
 }
 
-// ─── Login Step 1 (Email + Password → OTP or Direct Session) ───
+// ─── Login (Email + Password → Direct Session) ──────────────────
 
 /**
- * Validates credentials.
- * - ADMIN: Creates session immediately (no OTP needed)
- * - STUDENT/CREATOR: Generates and sends OTP
+ * Validates credentials and creates a session immediately for all roles.
+ * OTP is only used for password reset, not login.
  *
- * ANTI-ENUMERATION: For non-admin flow, response is always the same
- * whether the email exists or not.
+ * ANTI-ENUMERATION: On failure, always return the same error regardless
+ * of whether the email exists.
  */
 export async function loginStep1(
   input: LoginInput,
@@ -72,7 +72,6 @@ export async function loginStep1(
   const user = await userRepo.findByEmail(input.email);
 
   if (!user || !user.isActive) {
-    // Anti-enumeration: don't reveal that user doesn't exist
     await hashPassword('dummy-to-match-timing');
 
     await auditRepo.log({
@@ -82,7 +81,7 @@ export async function loginStep1(
       metadata: { email: input.email, reason: 'user_not_found' },
     });
 
-    return { otpRequired: true };
+    throw new UnauthorizedError('Invalid email or password');
   }
 
   const passwordValid = await verifyPassword(input.password, user.passwordHash);
@@ -96,60 +95,25 @@ export async function loginStep1(
       metadata: { reason: 'invalid_password' },
     });
 
-    // For admins with wrong password, still return otpRequired
-    // to avoid revealing that the account is an admin
-    return { otpRequired: true };
+    throw new UnauthorizedError('Invalid email or password');
   }
 
-  // ─── ADMIN: Skip OTP, create session directly ───
-  if (user.role === 'ADMIN') {
-    if (!user.emailVerified) {
-      await userRepo.setEmailVerified(user.id);
-    }
-
-    await createSession(user.id, meta);
-
-    await auditRepo.log({
-      userId: user.id,
-      action: 'SESSION_CREATED',
-      ipAddress: meta.ipAddress,
-      userAgent: meta.userAgent,
-      metadata: { method: 'password_only' },
-    });
-
-    const safeUser = await userRepo.findByIdSafe(user.id);
-    return { otpRequired: false, user: safeUser };
+  if (!user.emailVerified) {
+    await userRepo.setEmailVerified(user.id);
   }
 
-  // ─── STUDENT/CREATOR: Send OTP ───
-  const { code, hash } = await generateOTP();
-  const expiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000);
-
-  await otpRepo.create({
-    userId: user.id,
-    codeHash: hash,
-    purpose: 'login',
-    expiresAt,
-  });
+  await createSession(user.id, meta);
 
   await auditRepo.log({
     userId: user.id,
-    action: 'OTP_SENT',
+    action: 'SESSION_CREATED',
     ipAddress: meta.ipAddress,
     userAgent: meta.userAgent,
-    metadata: { purpose: 'login' },
+    metadata: { method: 'password_only' },
   });
 
-  const emailResult = await sendOTPEmail(input.email, code, user.displayName);
-  if (!emailResult.success) {
-    logger.error(
-      'OTP email delivery failed',
-      new Error(emailResult.error || 'unknown'),
-      { userId: user.id }
-    );
-  }
-
-  return { otpRequired: true };
+  const safeUser = await userRepo.findByIdSafe(user.id);
+  return { otpRequired: false, user: safeUser };
 }
 
 // ─── Login Step 2 (Verify OTP → Create Session) ────────────────
